@@ -1,4 +1,5 @@
 import 'package:debit_notes/constants/colors.dart';
+import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,22 +16,6 @@ class _HomePageState extends State<HomePage> {
     var pageWidth = MediaQuery.of(context).size.width;
     var pageHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-        bottomSheet: Container(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xff41C23F),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            onPressed: () {
-              // Add your button's functionality here
-            },
-            child: Text('Button'),
-          ),
-        ),
         appBar: AppBar(
           title: Text(
             "Debit\'s",
@@ -80,12 +65,41 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Container card1(double pageWidth, double pageHeight) {
-    return Container(
-      width: pageWidth,
-      height: pageHeight * 0.25,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: CardColors.red),
+  GestureDetector card1(double pageWidth, double pageHeight) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const FirstCardPage()), // İkinci ekranın adı "SecondScreen"
+        );
+      },
+      child: Container(
+        width: pageWidth,
+        height: pageHeight * 0.25,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16), color: CardColors.red),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Baki",
+                style: GoogleFonts.prompt(
+                    fontSize: 36, fontWeight: FontWeight.w700),
+              ),
+              Text(
+                debitAmountSum.toString() + "zł",
+                style: GoogleFonts.prompt(
+                    fontSize: 36, fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
