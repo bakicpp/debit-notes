@@ -15,31 +15,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
     var pageWidth = MediaQuery.of(context).size.width;
     var pageHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      bottomSheet: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-        child: Container(
-          height: 50,
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              primary: Color(0xff41C23F),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () {
-              // Add your button's functionality here
-            },
-            child: Text(
-              'Add Payment',
-              style: GoogleFonts.prompt(
-                  color: Color(0xffFFFFFF),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ),
+      bottomSheet: addPaymentButton(),
       appBar: AppBar(
         toolbarHeight: 150,
         title: Text(
@@ -59,6 +35,34 @@ class _FirstCardPageState extends State<FirstCardPage> {
               ),
               debitListBackground(pageWidth, pageHeight),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding addPaymentButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      child: Container(
+        height: 50,
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Color(0xff41C23F),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onPressed: () {
+            // Add your button's functionality here
+          },
+          child: Text(
+            'Add Payment',
+            style: GoogleFonts.prompt(
+                color: Color(0xffFFFFFF),
+                fontSize: 18,
+                fontWeight: FontWeight.w600),
           ),
         ),
       ),
