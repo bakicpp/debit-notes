@@ -57,6 +57,19 @@ class _FirstCardPageState extends State<FirstCardPage> {
     );
   }
 
+  void addPayment() {
+    if (descriptionController.text != "" && amountController.text != "") {
+      setState(() {
+        debitAmount.add(amountController.text);
+        debitDescription.add(descriptionController.text);
+        debitAmountSum += int.parse(amountController.text);
+        amountController.clear();
+        descriptionController.clear();
+      });
+      Navigator.pop(context);
+    }
+  }
+
   Container addPaymentButton(BuildContext context) {
     return Container(
       height: 50,
@@ -68,18 +81,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {
-          if (descriptionController.text != "" && amountController.text != "") {
-            setState(() {
-              debitAmount.add(amountController.text);
-              debitDescription.add(descriptionController.text);
-              debitAmountSum += int.parse(amountController.text);
-              amountController.clear();
-              descriptionController.clear();
-            });
-            Navigator.pop(context);
-          }
-        },
+        onPressed: addPayment,
         child: Text(
           'Add Payment',
           style: GoogleFonts.prompt(

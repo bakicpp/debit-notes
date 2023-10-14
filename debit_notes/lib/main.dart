@@ -1,4 +1,3 @@
-import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/homepage.dart';
 import 'package:flutter/material.dart';
 
