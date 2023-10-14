@@ -33,7 +33,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
               ),
               height: pageHeight * 0.7,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
                     SizedBox(
@@ -44,7 +44,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                       height: pageHeight * 0.03,
                     ),
                     descriptionTextField(),
-                    Spacer(),
+                    const Spacer(),
                     addPaymentButton(context),
                     SizedBox(
                       height: pageHeight * 0.03,
@@ -76,7 +76,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
       width: double.infinity,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          primary: Color(0xff41C23F),
+          primary: const Color(0xff41C23F),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -85,7 +85,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
         child: Text(
           'Add Payment',
           style: GoogleFonts.prompt(
-              color: Color(0xffFFFFFF),
+              color: const Color(0xffFFFFFF),
               fontSize: 18,
               fontWeight: FontWeight.w600),
         ),
@@ -97,11 +97,11 @@ class _FirstCardPageState extends State<FirstCardPage> {
     return TextFormField(
       controller: descriptionController,
       style: GoogleFonts.spaceGrotesk(
-          fontSize: 15, color: Color.fromRGBO(71, 84, 103, 0.7)),
+          fontSize: 15, color: const Color.fromRGBO(71, 84, 103, 0.7)),
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Color.fromRGBO(190, 193, 199, 1), width: 1),
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(190, 193, 199, 1), width: 1),
               borderRadius: BorderRadius.circular(8)),
           enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(
@@ -124,11 +124,11 @@ class _FirstCardPageState extends State<FirstCardPage> {
       keyboardType: TextInputType.number,
       controller: amountController,
       style: GoogleFonts.spaceGrotesk(
-          fontSize: 15, color: Color.fromRGBO(71, 84, 103, 0.7)),
+          fontSize: 15, color: const Color.fromRGBO(71, 84, 103, 0.7)),
       decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-              borderSide:
-                  BorderSide(color: Color.fromRGBO(190, 193, 199, 1), width: 1),
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(190, 193, 199, 1), width: 1),
               borderRadius: BorderRadius.circular(8)),
           enabledBorder: OutlineInputBorder(
               borderSide: const BorderSide(
@@ -157,7 +157,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back_ios_new),
+          icon: const Icon(Icons.arrow_back_ios_new),
         ),
         toolbarHeight: 150,
         title: Text(
@@ -166,7 +166,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -191,7 +191,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
         width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            primary: Color(0xff41C23F),
+            primary: const Color(0xff41C23F),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -202,7 +202,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
           child: Text(
             'Add Payment',
             style: GoogleFonts.prompt(
-                color: Color(0xffFFFFFF),
+                color: const Color(0xffFFFFFF),
                 fontSize: 18,
                 fontWeight: FontWeight.w600),
           ),
@@ -216,7 +216,8 @@ class _FirstCardPageState extends State<FirstCardPage> {
       width: pageWidth,
       height: pageHeight * 0.5,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12), color: Color(0xffE9E9E9)),
+          borderRadius: BorderRadius.circular(12),
+          color: const Color(0xffE9E9E9)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -254,8 +255,8 @@ class _FirstCardPageState extends State<FirstCardPage> {
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    color: Color.fromARGB(255, 255, 0, 0)),
-                child: Align(
+                    color: const Color.fromARGB(255, 255, 0, 0)),
+                child: const Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -267,10 +268,9 @@ class _FirstCardPageState extends State<FirstCardPage> {
                 ),
               ),
             ),
-            movementDuration: Duration(milliseconds: 500), // Kaydırma süresi
+            movementDuration: const Duration(milliseconds: 500),
             confirmDismiss: (direction) async {
               if (direction == DismissDirection.endToStart) {
-                // Kırmızı alana dokunulduğunda onay kutusu gösterilir
                 return await showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -309,7 +309,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
       height: pageHeight * 0.06,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          color: Color.fromARGB(255, 255, 255, 255)),
+          color: const Color.fromARGB(255, 255, 255, 255)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Row(
@@ -321,7 +321,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                   GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.w500),
             ),
             Text(
-              amount + " zł",
+              "$amount zł",
               style:
                   GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.w500),
             ),
@@ -350,7 +350,7 @@ Container card1(double pageWidth, double pageHeight) {
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
           Text(
-            debitAmountSum.toString() + "zł",
+            "${debitAmountSum}zł",
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
