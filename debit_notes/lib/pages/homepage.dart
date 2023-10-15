@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
+import 'package:debit_notes/services/firebase_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -85,6 +88,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  late CollectionReference _ref =
+      FirebaseFirestore.instance.collection("users/baki/amounts");
+
   Padding firstCardContent() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -97,11 +103,27 @@ class _HomePageState extends State<HomePage> {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          Text(
-            debitAmountSum.toString() + "zł",
-            style:
-                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
-          ),
+          StreamBuilder<DocumentSnapshot>(
+              stream: _ref.doc("debitSum").snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("Loading");
+                }
+
+                Map<String, dynamic> data =
+                    snapshot.data!.data() as Map<String, dynamic>;
+
+                return Text(
+                  data["debitAmountSum"].toString() + "zł",
+                  style: GoogleFonts.prompt(
+                      fontSize: 36, fontWeight: FontWeight.w700),
+                );
+              }),
         ],
       ),
     );
