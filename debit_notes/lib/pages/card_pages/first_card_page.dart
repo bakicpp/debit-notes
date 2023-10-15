@@ -253,6 +253,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
             },
             background: SizedBox(
               child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: const Color.fromARGB(255, 255, 0, 0)),
@@ -305,6 +306,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
   Container debitListCard(
       double pageWidth, double pageHeight, String amount, String description) {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       width: pageWidth,
       height: pageHeight * 0.06,
       decoration: BoxDecoration(

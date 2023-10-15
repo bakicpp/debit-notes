@@ -80,25 +80,29 @@ class _HomePageState extends State<HomePage> {
         height: pageHeight * 0.25,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16), color: CardColors.red),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Baki",
-                style: GoogleFonts.prompt(
-                    fontSize: 36, fontWeight: FontWeight.w700),
-              ),
-              Text(
-                debitAmountSum.toString() + "zł",
-                style: GoogleFonts.prompt(
-                    fontSize: 36, fontWeight: FontWeight.w700),
-              ),
-            ],
+        child: firstCardContent(),
+      ),
+    );
+  }
+
+  Padding firstCardContent() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Baki",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-        ),
+          Text(
+            debitAmountSum.toString() + "zł",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          ),
+        ],
       ),
     );
   }
