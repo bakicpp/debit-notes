@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
@@ -67,12 +68,13 @@ class _FirstCardPageState extends State<FirstCardPage> {
         debitAmount.add(amountController.text);
         debitDescription.add(descriptionController.text);
         debitAmountSum += int.parse(amountController.text);
-        amountController.clear();
-        descriptionController.clear();
         firebaseCollectionService.add({
           'amount': amountController.text,
           'description': descriptionController.text,
+          'timeStamp': DateTime.now().toString(),
         });
+        amountController.clear();
+        descriptionController.clear();
       });
       Navigator.pop(context);
     }
@@ -240,79 +242,109 @@ class _FirstCardPageState extends State<FirstCardPage> {
     );
   }
 
-  SizedBox debitList(double pageHeight, double pageWidth) {
-    return SizedBox(
-      height: pageHeight * 0.43,
-      child: ListView.builder(
-        itemCount: debitAmount.length,
-        itemBuilder: (context, index) {
-          final item = debitAmount[index];
-          return Dismissible(
-            key: Key(item),
-            direction: DismissDirection.endToStart,
-            onDismissed: (direction) {
-              setState(() {
-                debitAmount.removeAt(index);
-                debitDescription.removeAt(index);
-                debitAmountSum -= int.parse(item);
-              });
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text("$item dismissed")));
-            },
-            background: SizedBox(
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: const Color.fromARGB(255, 255, 0, 0)),
-                child: const Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            movementDuration: const Duration(milliseconds: 500),
-            confirmDismiss: (direction) async {
-              if (direction == DismissDirection.endToStart) {
-                return await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text("Onay"),
-                      content: const Text(
-                          "Bu öğeyi silmek istediğinizden emin misiniz?"),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text("Sil"),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text("İptal"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
-              return false;
-            },
-            child: debitListCard(pageWidth, pageHeight, debitAmount[index],
-                debitDescription[index]),
-          );
-        },
-      ),
-    );
+  void deleteItem(int index, var item) {
+    setState(() {
+      firebaseCollectionService.delete(item);
+    });
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("$item dismissed")));
   }
 
-  Container debitListCard(
-      double pageWidth, double pageHeight, String amount, String description) {
+  late CollectionReference _ref =
+      FirebaseFirestore.instance.collection("users");
+
+  StreamBuilder debitList(double pageHeight, double pageWidth) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: _ref.orderBy("timeStamp").snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasData) {
+            final snap = snapshot.data!.docs;
+            if (snap.isEmpty) {
+              return Row(
+                children: [
+                  Text(
+                    "empty state",
+                    style: GoogleFonts.manrope(
+                        fontSize: pageWidth / 25,
+                        fontWeight: FontWeight.w500,
+                        color: const Color.fromRGBO(105, 105, 105, 1)),
+                  ),
+                ],
+              );
+            }
+          }
+          final snap = snapshot.data!.docs;
+
+          return SizedBox(
+            height: pageHeight * 0.43,
+            child: ListView.builder(
+              itemCount: snap.length,
+              itemBuilder: (context, index) {
+                final item = snap[index];
+                String documentId = snap.toList()[index].id;
+
+                return Dismissible(
+                  key: Key(documentId.toString()),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    deleteItem(index, documentId);
+                  },
+                  background: SizedBox(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: const Color.fromARGB(255, 255, 0, 0)),
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  movementDuration: const Duration(milliseconds: 500),
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.endToStart) {
+                      return await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text("Onay"),
+                            content: const Text(
+                                "Bu öğeyi silmek istediğinizden emin misiniz?"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(true),
+                                child: const Text("Sil"),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: const Text("İptal"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                    return false;
+                  },
+                  child: debitListCard(
+                      pageWidth, pageHeight, snap[index]["amount"]),
+                );
+              },
+            ),
+          );
+        });
+  }
+
+  Container debitListCard(double pageWidth, double pageHeight, var amount) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       width: pageWidth,
@@ -326,7 +358,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              description,
+              "$amount",
               style:
                   GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.w500),
             ),
