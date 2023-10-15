@@ -283,65 +283,73 @@ class _FirstCardPageState extends State<FirstCardPage> {
                 final item = snap[index];
                 String documentId = snap.toList()[index].id;
 
-                return Dismissible(
-                  key: Key(documentId.toString()),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    deleteItem(index, documentId);
-                  },
-                  background: SizedBox(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: const Color.fromARGB(255, 255, 0, 0)),
-                      child: const Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  movementDuration: const Duration(milliseconds: 500),
-                  confirmDismiss: (direction) async {
-                    if (direction == DismissDirection.endToStart) {
-                      return await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text("Onay"),
-                            content: const Text(
-                                "Bu öğeyi silmek istediğinizden emin misiniz?"),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(true),
-                                child: const Text("Sil"),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                child: const Text("İptal"),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                    return false;
-                  },
-                  child: debitListCard(
-                      pageWidth, pageHeight, snap[index]["amount"]),
-                );
+                return scrollToLeftWidget(
+                    documentId, index, context, pageWidth, pageHeight, snap);
               },
             ),
           );
         });
+  }
+
+  Dismissible scrollToLeftWidget(
+      String documentId,
+      int index,
+      BuildContext context,
+      double pageWidth,
+      double pageHeight,
+      List<QueryDocumentSnapshot<Object?>> snap) {
+    return Dismissible(
+      key: Key(documentId.toString()),
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        deleteItem(index, documentId);
+      },
+      background: SizedBox(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: const Color.fromARGB(255, 255, 0, 0)),
+          child: const Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.delete,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+      movementDuration: const Duration(milliseconds: 500),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.endToStart) {
+          return await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Onay"),
+                content:
+                    const Text("Bu öğeyi silmek istediğinizden emin misiniz?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Sil"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("İptal"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        return false;
+      },
+      child: debitListCard(pageWidth, pageHeight, snap[index]["amount"]),
+    );
   }
 
   Container debitListCard(double pageWidth, double pageHeight, var amount) {
