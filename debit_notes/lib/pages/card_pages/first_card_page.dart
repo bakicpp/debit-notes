@@ -260,17 +260,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
           if (snapshot.hasData) {
             final snap = snapshot.data!.docs;
             if (snap.isEmpty) {
-              return Row(
-                children: [
-                  Text(
-                    "empty state",
-                    style: GoogleFonts.manrope(
-                        fontSize: pageWidth / 25,
-                        fontWeight: FontWeight.w500,
-                        color: const Color.fromRGBO(105, 105, 105, 1)),
-                  ),
-                ],
-              );
+              return listEmptyState(pageWidth);
             }
           }
           final snap = snapshot.data!.docs;
@@ -289,6 +279,20 @@ class _FirstCardPageState extends State<FirstCardPage> {
             ),
           );
         });
+  }
+
+  Row listEmptyState(double pageWidth) {
+    return Row(
+      children: [
+        Text(
+          "empty state",
+          style: GoogleFonts.manrope(
+              fontSize: pageWidth / 25,
+              fontWeight: FontWeight.w500,
+              color: const Color.fromRGBO(105, 105, 105, 1)),
+        ),
+      ],
+    );
   }
 
   Dismissible scrollToLeftWidget(
@@ -348,11 +352,13 @@ class _FirstCardPageState extends State<FirstCardPage> {
         }
         return false;
       },
-      child: debitListCard(pageWidth, pageHeight, snap[index]["amount"]),
+      child: debitListCard(pageWidth, pageHeight, snap[index]["amount"],
+          snap[index]["description"]),
     );
   }
 
-  Container debitListCard(double pageWidth, double pageHeight, var amount) {
+  Container debitListCard(
+      double pageWidth, double pageHeight, var amount, var description) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       width: pageWidth,
@@ -366,7 +372,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "$amount",
+              "$description",
               style:
                   GoogleFonts.prompt(fontSize: 16, fontWeight: FontWeight.w500),
             ),
