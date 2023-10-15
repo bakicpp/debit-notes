@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "632354660671",
+    "project_id": "debit-notes",
+    "storage_bucket": "debit-notes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632354660671:android:b8516b3a310f13fd23b38a",
+        "android_client_info": {
+          "package_name": "com.example.debit_notes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8XkOII8S57DagviiutaTPLTil-SVgNLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
