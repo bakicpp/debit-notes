@@ -1,4 +1,5 @@
 import 'package:debit_notes/constants/colors.dart';
+import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -57,6 +58,9 @@ class _FirstCardPageState extends State<FirstCardPage> {
     );
   }
 
+  FirebaseCollectionService firebaseCollectionService =
+      FirebaseCollectionService('users');
+
   void addPayment() {
     if (descriptionController.text != "" && amountController.text != "") {
       setState(() {
@@ -65,6 +69,10 @@ class _FirstCardPageState extends State<FirstCardPage> {
         debitAmountSum += int.parse(amountController.text);
         amountController.clear();
         descriptionController.clear();
+        firebaseCollectionService.add({
+          'amount': amountController.text,
+          'description': descriptionController.text,
+        });
       });
       Navigator.pop(context);
     }
