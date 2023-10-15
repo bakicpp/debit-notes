@@ -13,7 +13,13 @@ class FirebaseCollectionService<T> {
 
   Future<T> getById(String id) async {
     final snapshot = await _firestore.collection(collectionName).doc(id).get();
-    return snapshot.data() as T;
+
+    if (snapshot.exists) {
+      final Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      return data as T;
+    } else {
+      throw Exception('Document does not exist');
+    }
   }
 
   Future<void> add(T item) async {

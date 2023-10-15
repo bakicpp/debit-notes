@@ -4,8 +4,6 @@ import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-List debitAmount = [];
-List debitDescription = [];
 int debitAmountSum = 0;
 
 class FirstCardPage extends StatefulWidget {
@@ -18,6 +16,17 @@ class FirstCardPage extends StatefulWidget {
 class _FirstCardPageState extends State<FirstCardPage> {
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    firebaseCollectionService.getById("debitSum").then((value) {
+      setState(() {
+        debitAmountSum = int.parse(value["debitAmountSum"]);
+      });
+    });
+    // TODO: implement initState
+    super.initState();
+  }
 
   void _showBottomSheet(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
@@ -60,14 +69,19 @@ class _FirstCardPageState extends State<FirstCardPage> {
   }
 
   FirebaseCollectionService firebaseCollectionService =
-      FirebaseCollectionService('users');
+      FirebaseCollectionService('users/baki/amounts');
+
+  void updateDebitSum() {
+    firebaseCollectionService.update("debitSum", {
+      'debitAmountSum': debitAmountSum.toString(),
+    });
+  }
 
   void addPayment() {
     if (descriptionController.text != "" && amountController.text != "") {
       setState(() {
-        debitAmount.add(amountController.text);
-        debitDescription.add(descriptionController.text);
         debitAmountSum += int.parse(amountController.text);
+        updateDebitSum();
         firebaseCollectionService.add({
           'amount': amountController.text,
           'description': descriptionController.text,
@@ -242,16 +256,22 @@ class _FirstCardPageState extends State<FirstCardPage> {
     );
   }
 
-  void deleteItem(int index, var item) {
+  void deleteItem(int index, var item, List snap) async {
     setState(() {
       firebaseCollectionService.delete(item);
     });
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("$item dismissed")));
+    setState(() {
+      debitAmountSum =
+          debitAmountSum - int.parse(snap[index]["amount"] as String);
+      updateDebitSum();
+    });
+    print("sum: $debitAmountSum");
   }
 
   late CollectionReference _ref =
-      FirebaseFirestore.instance.collection("users");
+      FirebaseFirestore.instance.collection("users/baki/amounts");
 
   StreamBuilder debitList(double pageHeight, double pageWidth) {
     return StreamBuilder<QuerySnapshot>(
@@ -306,7 +326,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
       key: Key(documentId.toString()),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
-        deleteItem(index, documentId);
+        deleteItem(index, documentId, snap);
       },
       background: SizedBox(
         child: Container(

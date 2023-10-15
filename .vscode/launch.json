@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "debit_notes",
+            "cwd": "debit_notes",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "debit_notes (profile mode)",
+            "cwd": "debit_notes",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "debit_notes (release mode)",
+            "cwd": "debit_notes",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
