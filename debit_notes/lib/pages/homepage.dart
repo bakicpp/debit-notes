@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
+import 'package:debit_notes/pages/card_pages/second_card_page.dart';
+import 'package:debit_notes/pages/card_pages/third_card_page.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -50,21 +52,55 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  Container card3(double pageWidth, double pageHeight) {
-    return Container(
-      width: pageWidth,
-      height: pageHeight * 0.25,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: CardColors.green),
+  GestureDetector card3(double pageWidth, double pageHeight) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const ThirdCardPage()), // İkinci ekranın adı "SecondScreen"
+        );
+      },
+      child: Container(
+        width: pageWidth,
+        height: pageHeight * 0.25,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16), color: CardColors.green),
+        child: Container(
+          width: pageWidth,
+          height: pageHeight * 0.25,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16), color: CardColors.pink),
+          child: cardContent("ibrahim", "İbrahim"),
+        ),
+      ),
     );
   }
 
-  Container card2(double pageWidth, double pageHeight) {
-    return Container(
-      width: pageWidth,
-      height: pageHeight * 0.25,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: CardColors.pink),
+  GestureDetector card2(double pageWidth, double pageHeight) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  const SecondCardPage()), // İkinci ekranın adı "SecondScreen"
+        );
+      },
+      child: Container(
+        width: pageWidth,
+        height: pageHeight * 0.25,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16), color: CardColors.pink),
+        child: Container(
+          width: pageWidth,
+          height: pageHeight * 0.25,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16), color: CardColors.green),
+          child: cardContent("anil", "Anıl"),
+        ),
+      ),
     );
   }
 
@@ -83,15 +119,12 @@ class _HomePageState extends State<HomePage> {
         height: pageHeight * 0.25,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16), color: CardColors.red),
-        child: firstCardContent(),
+        child: cardContent("baki", "Baki"),
       ),
     );
   }
 
-  late CollectionReference _ref =
-      FirebaseFirestore.instance.collection("users/baki/amounts");
-
-  Padding firstCardContent() {
+  Padding cardContent(String username, String userShownName) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       child: Column(
@@ -99,33 +132,40 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Baki",
+            userShownName,
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          StreamBuilder<DocumentSnapshot>(
-              stream: _ref.doc("debitSum").snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("Loading");
-                }
-
-                Map<String, dynamic> data =
-                    snapshot.data!.data() as Map<String, dynamic>;
-
-                return Text(
-                  data["debitAmountSum"].toString() + "zł",
-                  style: GoogleFonts.prompt(
-                      fontSize: 36, fontWeight: FontWeight.w700),
-                );
-              }),
+          realTimeAmount(username),
         ],
       ),
     );
+  }
+
+  StreamBuilder<DocumentSnapshot<Object?>> realTimeAmount(String username) {
+    late CollectionReference _ref =
+        FirebaseFirestore.instance.collection("users/$username/amounts");
+
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _ref.doc("debitSum").snapshots(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text("Loading");
+          }
+
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          return Text(
+            data["debitAmountSum"].toString() + "zł",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          );
+        });
   }
 }
