@@ -277,35 +277,41 @@ class _SecondCardPageState extends State<SecondCardPage> {
     return StreamBuilder<QuerySnapshot>(
         stream: _ref.orderBy("timeStamp").snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasData) {
+          try {
             final snap = snapshot.data!.docs;
-            if (snap.isEmpty) {
-              return listEmptyState(pageWidth);
+            if (snapshot.hasData) {
+              if (snap.isEmpty) {
+                return listEmptyState(pageWidth);
+              }
             }
+            if (snapshot.hasError) {
+              return const Text('Something went wrong');
+            }
+
+            return SizedBox(
+              height: pageHeight * 0.43,
+              child: ListView.builder(
+                itemCount: snap.length,
+                itemBuilder: (context, index) {
+                  String documentId = snap.toList()[index].id;
+
+                  return scrollToLeftWidget(
+                      documentId, index, context, pageWidth, pageHeight, snap);
+                },
+              ),
+            );
+          } catch (e) {
+            return const Center(child: CircularProgressIndicator());
           }
-          final snap = snapshot.data!.docs;
-
-          return SizedBox(
-            height: pageHeight * 0.43,
-            child: ListView.builder(
-              itemCount: snap.length,
-              itemBuilder: (context, index) {
-                final item = snap[index];
-                String documentId = snap.toList()[index].id;
-
-                return scrollToLeftWidget(
-                    documentId, index, context, pageWidth, pageHeight, snap);
-              },
-            ),
-          );
         });
   }
 
-  Row listEmptyState(double pageWidth) {
-    return Row(
+  Column listEmptyState(double pageWidth) {
+    return Column(
       children: [
+        Vectors.emptyState,
         Text(
-          "empty state",
+          "No item added yet.",
           style: GoogleFonts.manrope(
               fontSize: pageWidth / 25,
               fontWeight: FontWeight.w500,
