@@ -3,8 +3,6 @@ import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
-import 'package:debit_notes/services/firebase_service.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int yourPayment = 0;
+
   @override
   Widget build(BuildContext context) {
     var pageWidth = MediaQuery.of(context).size.width;
@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            "Debit\'s",
+            "Debit's",
             style:
                 GoogleFonts.prompt(fontSize: 48, fontWeight: FontWeight.w700),
           ),
@@ -136,13 +136,14 @@ class _HomePageState extends State<HomePage> {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          realTimeAmount(username),
+          realTimeAmount(username, userShownName),
         ],
       ),
     );
   }
 
-  StreamBuilder<DocumentSnapshot<Object?>> realTimeAmount(String username) {
+  StreamBuilder<DocumentSnapshot<Object?>> realTimeAmount(
+      String username, String userShownName) {
     late CollectionReference _ref =
         FirebaseFirestore.instance.collection("users/$username/amounts");
 
@@ -161,10 +162,33 @@ class _HomePageState extends State<HomePage> {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
-          return Text(
-            data["debitAmountSum"].toString() + "zł",
-            style:
-                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data["debitAmountSum"].toString() + "zł",
+                style: GoogleFonts.prompt(
+                    fontSize: 36, fontWeight: FontWeight.w700),
+              ),
+              SizedBox(
+                height: 24.0,
+              ),
+              int.parse(data["debitAmountSum"]) != 0
+                  ? Text(
+                      "You must pay to " +
+                          userShownName +
+                          " " +
+                          (int.parse(data["debitAmountSum"]) / 3)
+                              .toStringAsFixed(2) +
+                          "zł",
+                      style: GoogleFonts.prompt(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textColor),
+                    )
+                  : Container()
+            ],
           );
         });
   }
