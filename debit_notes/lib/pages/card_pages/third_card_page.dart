@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
+import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
