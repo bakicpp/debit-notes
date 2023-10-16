@@ -329,7 +329,7 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
       double pageHeight,
       List<QueryDocumentSnapshot<Object?>> snap) {
     return Dismissible(
-      key: Key(documentId.toString()),
+      key: UniqueKey(),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
         deleteItem(index, documentId, snap);
