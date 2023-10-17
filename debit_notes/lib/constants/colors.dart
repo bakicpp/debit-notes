@@ -12,11 +12,3 @@ class CardColors {
   static const Color pink = Color(0xffCE66FF);
   static const Color green = Color(0xff58E16E);
 }
-
-class Vectors {
-  static const Image emptyState = Image(
-    width: 200,
-    height: 200,
-    image: AssetImage('images/empty_state.png'),
-  );
-}

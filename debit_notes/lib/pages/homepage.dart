@@ -162,34 +162,36 @@ class _HomePageState extends State<HomePage> {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data["debitAmountSum"].toString() + "zł",
-                style: GoogleFonts.prompt(
-                    fontSize: 36, fontWeight: FontWeight.w700),
-              ),
-              SizedBox(
-                height: 24.0,
-              ),
-              int.parse(data["debitAmountSum"]) != 0
-                  ? Text(
-                      "You must pay to " +
-                          userShownName +
-                          " " +
-                          (int.parse(data["debitAmountSum"]) / 3)
-                              .toStringAsFixed(2) +
-                          "zł",
-                      style: GoogleFonts.prompt(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textColor),
-                    )
-                  : Container()
-            ],
-          );
+          return calculatedAmount(data, userShownName);
         });
+  }
+
+  Column calculatedAmount(Map<String, dynamic> data, String userShownName) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          data["debitAmountSum"].toString() + "zł",
+          style: GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+        ),
+        SizedBox(
+          height: 24.0,
+        ),
+        int.parse(data["debitAmountSum"]) != 0
+            ? Text(
+                "You must pay to " +
+                    userShownName +
+                    " " +
+                    (int.parse(data["debitAmountSum"]) / 3).toStringAsFixed(2) +
+                    "zł",
+                style: GoogleFonts.prompt(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textColor),
+              )
+            : Container()
+      ],
+    );
   }
 }
