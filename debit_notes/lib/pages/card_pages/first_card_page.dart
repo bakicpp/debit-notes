@@ -75,10 +75,14 @@ class _FirstCardPageState extends State<FirstCardPage> {
                             if (user1SeperateDebitController.text != "") {
                               user1Debit +=
                                   int.parse(user1SeperateDebitController.text);
+                              debitAmountSum -=
+                                  int.parse(user1SeperateDebitController.text);
                               updateUserDebitsBySeperate();
                               user1SeperateDebitController.clear();
                             }
                             if (user2SeperateDebitController.text != "") {
+                              debitAmountSum -=
+                                  int.parse(user2SeperateDebitController.text);
                               user2Debit +=
                                   int.parse(user2SeperateDebitController.text);
                               updateUserDebitsBySeperate();
@@ -576,6 +580,9 @@ class _FirstCardPageState extends State<FirstCardPage> {
       });
       user2SeperateDebitController.clear();
     }
+    firebaseCollectionService.update("debitSum", {
+      'debitAmountSum': debitAmountSum.toString(),
+    });
   }
 
   late CollectionReference _ref =
