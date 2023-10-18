@@ -23,11 +23,6 @@ class _FirstCardPageState extends State<FirstCardPage> {
 
   @override
   void initState() {
-    firebaseCollectionService.getById("debitSum").then((value) {
-      setState(() {
-        debitAmountSum = int.parse(value["debitAmountSum"]);
-      });
-    });
     // TODO: implement initState
     super.initState();
   }
@@ -744,17 +739,39 @@ Container card1(double pageWidth, double pageHeight) {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          changeView
-              ? getTotalDebit()
-              : Text(
-                  "${debitAmountSum}zł",
-                  style: GoogleFonts.prompt(
-                      fontSize: 36, fontWeight: FontWeight.w700),
-                ),
+          changeView ? getTotalDebit() : getDebitAmountSum()
         ],
       ),
     ),
   );
+}
+
+StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum() {
+  return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("users/baki/amounts")
+          .doc("debitSum")
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text('Something went wrong');
+        }
+
+        if (snapshot.hasData) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          debitAmountSum = int.parse(data["debitAmountSum"]);
+
+          return Text(
+            "${debitAmountSum}" + "zl",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          );
+        }
+        return CircularProgressIndicator();
+      });
 }
 
 StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
@@ -773,8 +790,10 @@ StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
 
-          var userDebitSum =
-              int.parse(data["user1"]) + int.parse(data["user2"]);
+          user1Debit = int.parse(data["user1"]);
+          user2Debit = int.parse(data["user2"]);
+          var userDebitSum = user1Debit +
+              user2Debit; //int.parse(data["user1"]) + int.parse(data["user2"]);
 
           return Text(
             "Total Debit : " + "${userDebitSum}" + "zl",
