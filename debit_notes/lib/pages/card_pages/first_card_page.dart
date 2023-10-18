@@ -32,6 +32,113 @@ class _FirstCardPageState extends State<FirstCardPage> {
     super.initState();
   }
 
+  TextEditingController user1SeperateDebitController = TextEditingController();
+
+  TextEditingController user2SeperateDebitController = TextEditingController();
+
+  void _showInBottomSheet(BuildContext context) {
+    var pageHeight = MediaQuery.of(context).size.height;
+
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: pageHeight * 0.7,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    seperateAmountTf(user1SeperateDebitController, "Anıl"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    seperateAmountTf(user2SeperateDebitController, "İbrahim"),
+                    const Spacer(),
+                    Container(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 250, 161, 45),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            if (user1SeperateDebitController.text != "") {
+                              user1Debit +=
+                                  int.parse(user1SeperateDebitController.text);
+                              updateUserDebits();
+                              user1SeperateDebitController.clear();
+                            }
+                            if (user2SeperateDebitController.text != "") {
+                              user2Debit +=
+                                  int.parse(user2SeperateDebitController.text);
+                              updateUserDebits();
+                              user2SeperateDebitController.clear();
+                            }
+                          });
+                        },
+                        child: Text(
+                          'Add Seperate Payment',
+                          style: GoogleFonts.prompt(
+                              color: const Color(0xffFFFFFF),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                  ],
+                ),
+              )),
+        );
+      },
+    );
+  }
+
+  TextFormField seperateAmountTf(
+      TextEditingController controller, String name) {
+    return TextFormField(
+      keyboardType: TextInputType.number,
+      controller: controller,
+      style: GoogleFonts.spaceGrotesk(
+          fontSize: 15, color: const Color.fromRGBO(71, 84, 103, 0.7)),
+      decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(190, 193, 199, 1), width: 1),
+              borderRadius: BorderRadius.circular(8)),
+          enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(234, 236, 240, 1), width: 1),
+              borderRadius: BorderRadius.circular(8)),
+          hintText: name,
+          hintStyle: GoogleFonts.manrope(
+              fontWeight: FontWeight.w400,
+              fontSize: 15,
+              color: const Color.fromRGBO(71, 84, 103, 0.7)),
+          border: OutlineInputBorder(
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(234, 236, 240, 1), width: 0.5),
+              borderRadius: BorderRadius.circular(8))),
+    );
+  }
+
   void _showBottomSheet(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
     showModalBottomSheet(
@@ -61,6 +168,31 @@ class _FirstCardPageState extends State<FirstCardPage> {
                     descriptionTextField(),
                     const Spacer(),
                     addPaymentButton(context),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Container(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 250, 161, 45),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          _showInBottomSheet(context);
+                        },
+                        child: Text(
+                          'Add Seperate Payment',
+                          style: GoogleFonts.prompt(
+                              color: const Color(0xffFFFFFF),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
@@ -336,6 +468,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                   onSubmitted: (value) {
                     setState(() {
                       user1Debit = int.parse(value);
+
                       updateUserDebits();
                     });
                   },
@@ -380,6 +513,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                   onSubmitted: (value) {
                     setState(() {
                       user2Debit = int.parse(value);
+
                       updateUserDebits();
                     });
                   },
@@ -414,15 +548,17 @@ class _FirstCardPageState extends State<FirstCardPage> {
   }
 
   void updateUserDebits() {
-    if (user1DebitController.text != "") {
+    if (user1DebitController.text != "" ||
+        user1SeperateDebitController.text != "") {
       firebaseCollectionService.update("userDebit", {
-        'user1': user1DebitController.text,
+        'user1': user1Debit.toString(),
       });
       user1DebitController.clear();
     }
-    if (user2DebitController.text != "") {
+    if (user2DebitController.text != "" ||
+        user2SeperateDebitController.text != "") {
       firebaseCollectionService.update("userDebit", {
-        'user2': user2DebitController.text,
+        'user2': user2Debit.toString(),
       });
       user2DebitController.clear();
     }
