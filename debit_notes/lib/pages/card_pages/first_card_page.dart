@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 int debitAmountSum = 0;
+int user1Debit = 0;
+int user2Debit = 0;
+bool changeView = false;
 
 class FirstCardPage extends StatefulWidget {
   const FirstCardPage({super.key});
@@ -178,6 +181,16 @@ class _FirstCardPageState extends State<FirstCardPage> {
     return Scaffold(
       bottomSheet: openPaymentBottomSheet(),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                changeView = !changeView;
+              });
+            },
+            icon: const Icon(Icons.swap_horiz),
+          ),
+        ],
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -245,16 +258,138 @@ class _FirstCardPageState extends State<FirstCardPage> {
           color: const Color(0xffE9E9E9)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            SizedBox(
-              height: pageHeight * 0.03,
-            ),
-            debitList(pageHeight, pageWidth),
-          ],
-        ),
+        child: !changeView
+            ? Column(
+                children: [
+                  SizedBox(
+                    height: pageHeight * 0.03,
+                  ),
+                  debitList(pageHeight, pageWidth),
+                ],
+              )
+            : userDebitView(pageWidth),
       ),
     );
+  }
+
+  Row userDebitView(double pageWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        //debitList(pageHeight, pageWidth),
+        Column(
+          children: [
+            Text(
+              "Anıl",
+              style: GoogleFonts.prompt(
+                  fontSize: 32,
+                  color: const Color(0xff808080),
+                  fontWeight: FontWeight.w500),
+            ),
+            getUser1Debit(pageWidth)
+          ],
+        ),
+        Column(
+          children: [
+            Text(
+              "İbrahim",
+              style: GoogleFonts.prompt(
+                  fontSize: 32,
+                  color: const Color(0xff808080),
+                  fontWeight: FontWeight.w500),
+            ),
+            getUser2Debit(pageWidth)
+          ],
+        ),
+      ],
+    );
+  }
+
+  StreamBuilder<DocumentSnapshot> getUser1Debit(double pageWidth) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _ref.doc("userDebit").snapshots(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          return Expanded(
+            child: SizedBox(
+              width: pageWidth * 0.2,
+              child: TextField(
+                keyboardType: TextInputType.number,
+                controller: user1DebitController,
+                onSubmitted: (value) {
+                  setState(() {
+                    user1Debit = int.parse(value);
+                    updateUserDebits();
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: data["user1"].toString() + "zl",
+                  contentPadding: EdgeInsets.only(left: 20),
+                  hintStyle: GoogleFonts.prompt(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  TextEditingController user1DebitController = TextEditingController();
+  TextEditingController user2DebitController = TextEditingController();
+
+  StreamBuilder<DocumentSnapshot> getUser2Debit(double pageWidth) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _ref.doc("userDebit").snapshots(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          return Expanded(
+            child: SizedBox(
+              width: pageWidth * 0.2,
+              child: TextField(
+                keyboardType: TextInputType.number,
+                controller: user2DebitController,
+                onSubmitted: (value) {
+                  setState(() {
+                    user2Debit = int.parse(value);
+                    updateUserDebits();
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: data["user2"].toString() + "zl",
+                  contentPadding: EdgeInsets.only(left: 20),
+                  hintStyle: GoogleFonts.prompt(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   void deleteItem(int index, var item, List snap) async {
@@ -269,6 +404,17 @@ class _FirstCardPageState extends State<FirstCardPage> {
       updateDebitSum();
     });
     print("sum: $debitAmountSum");
+  }
+
+  void updateUserDebits() {
+    if (user1DebitController.text != "" && user2DebitController.text != "") {
+      firebaseCollectionService.update("userDebit", {
+        'user1': user1DebitController.text,
+        'user2': user2DebitController.text,
+      });
+      user1DebitController.clear();
+      user2DebitController.clear();
+    }
   }
 
   late CollectionReference _ref =
@@ -432,13 +578,43 @@ Container card1(double pageWidth, double pageHeight) {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          Text(
-            "${debitAmountSum}zł",
-            style:
-                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
-          ),
+          changeView
+              ? getTotalDebit()
+              : Text(
+                  "${debitAmountSum}zł",
+                  style: GoogleFonts.prompt(
+                      fontSize: 36, fontWeight: FontWeight.w700),
+                ),
         ],
       ),
     ),
   );
+}
+
+StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
+  return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("users/baki/amounts")
+          .doc("userDebit")
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text('Something went wrong');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+
+        Map<String, dynamic> data =
+            snapshot.data!.data() as Map<String, dynamic>;
+
+        var userDebitSum = int.parse(data["user1"]) + int.parse(data["user2"]);
+
+        return Text(
+          "Total Debit : " + "${userDebitSum}" + "zl",
+          style: GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+        );
+      });
 }
