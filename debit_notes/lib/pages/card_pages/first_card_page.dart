@@ -179,7 +179,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
     var pageWidth = MediaQuery.of(context).size.width;
     var pageHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      bottomSheet: openPaymentBottomSheet(),
+      bottomSheet: !changeView ? openPaymentBottomSheet() : null,
       appBar: AppBar(
         actions: [
           IconButton(
@@ -267,18 +267,21 @@ class _FirstCardPageState extends State<FirstCardPage> {
                   debitList(pageHeight, pageWidth),
                 ],
               )
-            : userDebitView(pageWidth),
+            : userDebitView(pageWidth, pageHeight),
       ),
     );
   }
 
-  Row userDebitView(double pageWidth) {
+  Row userDebitView(double pageWidth, double pageHeight) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         //debitList(pageHeight, pageWidth),
         Column(
           children: [
+            SizedBox(
+              height: pageHeight * 0.03,
+            ),
             Text(
               "Anıl",
               style: GoogleFonts.prompt(
@@ -291,6 +294,9 @@ class _FirstCardPageState extends State<FirstCardPage> {
         ),
         Column(
           children: [
+            SizedBox(
+              height: pageHeight * 0.03,
+            ),
             Text(
               "İbrahim",
               style: GoogleFonts.prompt(
