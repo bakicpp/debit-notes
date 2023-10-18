@@ -80,13 +80,13 @@ class _FirstCardPageState extends State<FirstCardPage> {
                             if (user1SeperateDebitController.text != "") {
                               user1Debit +=
                                   int.parse(user1SeperateDebitController.text);
-                              updateUserDebits();
+                              updateUserDebitsBySeperate();
                               user1SeperateDebitController.clear();
                             }
                             if (user2SeperateDebitController.text != "") {
                               user2Debit +=
                                   int.parse(user2SeperateDebitController.text);
-                              updateUserDebits();
+                              updateUserDebitsBySeperate();
                               user2SeperateDebitController.clear();
                             }
                           });
@@ -548,19 +548,38 @@ class _FirstCardPageState extends State<FirstCardPage> {
   }
 
   void updateUserDebits() {
-    if (user1DebitController.text != "" ||
-        user1SeperateDebitController.text != "") {
+    if (user1DebitController.text != "") {
       firebaseCollectionService.update("userDebit", {
         'user1': user1Debit.toString(),
       });
       user1DebitController.clear();
     }
-    if (user2DebitController.text != "" ||
-        user2SeperateDebitController.text != "") {
+    if (user2DebitController.text != "") {
       firebaseCollectionService.update("userDebit", {
         'user2': user2Debit.toString(),
       });
       user2DebitController.clear();
+    }
+  }
+
+  FirebaseCollectionService user1 =
+      FirebaseCollectionService('users/anil/amounts');
+
+  FirebaseCollectionService user2 =
+      FirebaseCollectionService('users/ibrahim/amounts');
+
+  void updateUserDebitsBySeperate() {
+    if (user1SeperateDebitController.text != "") {
+      user1.update("userDebit", {
+        'user1': user1Debit.toString(),
+      });
+      user1SeperateDebitController.clear();
+    }
+    if (user2SeperateDebitController.text != "") {
+      user2.update("userDebit", {
+        'user2': user2Debit.toString(),
+      });
+      user2SeperateDebitController.clear();
     }
   }
 
