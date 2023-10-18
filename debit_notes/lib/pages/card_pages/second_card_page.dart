@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 int debitAmountSum = 0;
+int user1Debit = 0;
+int user2Debit = 0;
+bool changeView = false;
 
 class SecondCardPage extends StatefulWidget {
   const SecondCardPage({super.key});
@@ -20,13 +23,129 @@ class _SecondCardPageState extends State<SecondCardPage> {
 
   @override
   void initState() {
-    firebaseCollectionService.getById("debitSum").then((value) {
-      setState(() {
-        debitAmountSum = int.parse(value["debitAmountSum"]);
-      });
-    });
     // TODO: implement initState
     super.initState();
+  }
+
+  TextEditingController user1SeperateDebitController = TextEditingController();
+
+  TextEditingController user2SeperateDebitController = TextEditingController();
+
+  void _showInBottomSheet(BuildContext context) {
+    var pageHeight = MediaQuery.of(context).size.height;
+
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: pageHeight * 0.7,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    seperateAmountTf(user1SeperateDebitController, "Baki"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    seperateAmountTf(user2SeperateDebitController, "İbrahim"),
+                    const Spacer(),
+                    addSeperateButton(),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                  ],
+                ),
+              )),
+        );
+      },
+    );
+  }
+
+  Container addSeperateButton() {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromARGB(255, 250, 161, 45),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            if (user1SeperateDebitController.text != "" &&
+                user2SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user1SeperateDebitController.text);
+              debitAmountSum -= int.parse(user2SeperateDebitController.text);
+              user1Debit += int.parse(user1SeperateDebitController.text);
+              user2Debit += int.parse(user2SeperateDebitController.text);
+              updateUserDebitsBySeperate();
+              user1SeperateDebitController.clear();
+              user2SeperateDebitController.clear();
+            }
+            if (user1SeperateDebitController.text != "") {
+              user1Debit += int.parse(user1SeperateDebitController.text);
+              debitAmountSum -= int.parse(user1SeperateDebitController.text);
+              updateUserDebitsBySeperate();
+              user1SeperateDebitController.clear();
+            }
+            if (user2SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user2SeperateDebitController.text);
+              user2Debit += int.parse(user2SeperateDebitController.text);
+              updateUserDebitsBySeperate();
+              user2SeperateDebitController.clear();
+            }
+          });
+        },
+        child: Text(
+          'Add Seperate Payment',
+          style: GoogleFonts.prompt(
+              color: const Color(0xffFFFFFF),
+              fontSize: 18,
+              fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  TextFormField seperateAmountTf(
+      TextEditingController controller, String name) {
+    return TextFormField(
+      keyboardType: TextInputType.number,
+      controller: controller,
+      style: GoogleFonts.spaceGrotesk(
+          fontSize: 15, color: const Color.fromRGBO(71, 84, 103, 0.7)),
+      decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(190, 193, 199, 1), width: 1),
+              borderRadius: BorderRadius.circular(8)),
+          enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(234, 236, 240, 1), width: 1),
+              borderRadius: BorderRadius.circular(8)),
+          hintText: name,
+          hintStyle: GoogleFonts.manrope(
+              fontWeight: FontWeight.w400,
+              fontSize: 15,
+              color: const Color.fromRGBO(71, 84, 103, 0.7)),
+          border: OutlineInputBorder(
+              borderSide: const BorderSide(
+                  color: Color.fromRGBO(234, 236, 240, 1), width: 0.5),
+              borderRadius: BorderRadius.circular(8))),
+    );
   }
 
   void _showBottomSheet(BuildContext context) {
@@ -61,11 +180,40 @@ class _SecondCardPageState extends State<SecondCardPage> {
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
+                    openSeperateBottomSheet(context),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
                   ],
                 ),
               )),
         );
       },
+    );
+  }
+
+  Container openSeperateBottomSheet(BuildContext context) {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromARGB(255, 250, 161, 45),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: () {
+          _showInBottomSheet(context);
+        },
+        child: Text(
+          'Add Seperate Payment',
+          style: GoogleFonts.prompt(
+              color: const Color(0xffFFFFFF),
+              fontSize: 18,
+              fontWeight: FontWeight.w600),
+        ),
+      ),
     );
   }
 
@@ -176,8 +324,18 @@ class _SecondCardPageState extends State<SecondCardPage> {
     var pageWidth = MediaQuery.of(context).size.width;
     var pageHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      bottomSheet: openPaymentBottomSheet(),
+      bottomSheet: !changeView ? openPaymentBottomSheet() : null,
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                changeView = !changeView;
+              });
+            },
+            icon: const Icon(Icons.swap_horiz),
+          ),
+        ],
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -196,7 +354,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              card2(pageWidth, pageHeight),
+              card1(pageWidth, pageHeight),
               SizedBox(
                 height: pageHeight * 0.05,
               ),
@@ -245,16 +403,147 @@ class _SecondCardPageState extends State<SecondCardPage> {
           color: const Color(0xffE9E9E9)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
+        child: !changeView
+            ? Column(
+                children: [
+                  SizedBox(
+                    height: pageHeight * 0.03,
+                  ),
+                  debitList(pageHeight, pageWidth),
+                ],
+              )
+            : userDebitView(pageWidth, pageHeight),
+      ),
+    );
+  }
+
+  Row userDebitView(double pageWidth, double pageHeight) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        //debitList(pageHeight, pageWidth),
+        Column(
           children: [
             SizedBox(
               height: pageHeight * 0.03,
             ),
-            debitList(pageHeight, pageWidth),
+            Text(
+              "Baki",
+              style: GoogleFonts.prompt(
+                  fontSize: 32,
+                  color: const Color(0xff808080),
+                  fontWeight: FontWeight.w500),
+            ),
+            getUser1Debit(pageWidth)
           ],
         ),
-      ),
+        Column(
+          children: [
+            SizedBox(
+              height: pageHeight * 0.03,
+            ),
+            Text(
+              "İbrahim",
+              style: GoogleFonts.prompt(
+                  fontSize: 32,
+                  color: const Color(0xff808080),
+                  fontWeight: FontWeight.w500),
+            ),
+            getUser2Debit(pageWidth)
+          ],
+        ),
+      ],
     );
+  }
+
+  StreamBuilder<DocumentSnapshot> getUser1Debit(double pageWidth) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _ref.doc("userDebit").snapshots(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+          /*if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }*/
+
+          if (snapshot.hasData) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+
+            return Expanded(
+              child: SizedBox(
+                width: pageWidth * 0.2,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: user1DebitController,
+                  onSubmitted: (value) {
+                    setState(() {
+                      user1Debit = int.parse(value);
+
+                      updateUserDebits();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: data["user1"].toString() + "zl",
+                    contentPadding: EdgeInsets.only(left: 20),
+                    hintStyle: GoogleFonts.prompt(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            );
+          }
+          return CircularProgressIndicator();
+        });
+  }
+
+  TextEditingController user1DebitController = TextEditingController();
+  TextEditingController user2DebitController = TextEditingController();
+
+  StreamBuilder<DocumentSnapshot> getUser2Debit(double pageWidth) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: _ref.doc("userDebit").snapshots(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.hasData) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+
+            return Expanded(
+              child: SizedBox(
+                width: pageWidth * 0.2,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: user2DebitController,
+                  onSubmitted: (value) {
+                    setState(() {
+                      user2Debit = int.parse(value);
+
+                      updateUserDebits();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: data["user2"].toString() + "zl",
+                    contentPadding: EdgeInsets.only(left: 20),
+                    hintStyle: GoogleFonts.prompt(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            );
+          }
+          return CircularProgressIndicator();
+        });
   }
 
   void deleteItem(int index, var item, List snap) async {
@@ -269,6 +558,47 @@ class _SecondCardPageState extends State<SecondCardPage> {
       updateDebitSum();
     });
     print("sum: $debitAmountSum");
+  }
+
+  void updateUserDebits() {
+    if (user1DebitController.text != "") {
+      firebaseCollectionService.update("userDebit", {
+        'user1': user1Debit.toString(),
+      });
+      user1DebitController.clear();
+    }
+    if (user2DebitController.text != "") {
+      firebaseCollectionService.update("userDebit", {
+        'user2': user2Debit.toString(),
+      });
+      user2DebitController.clear();
+    }
+  }
+
+  FirebaseCollectionService user1 =
+      FirebaseCollectionService('users/baki/amounts');
+
+  FirebaseCollectionService user2 =
+      FirebaseCollectionService('users/ibrahim/amounts');
+
+  void updateUserDebitsBySeperate() {
+    if (user1SeperateDebitController.text != "") {
+      user1.update("userDebit", {
+        'user1': user1Debit.toString(),
+      });
+      user1SeperateDebitController.clear();
+    }
+    if (user2SeperateDebitController.text != "") {
+      user2.update("userDebit", {
+        'user2': user2Debit.toString(),
+      });
+      user2SeperateDebitController.clear();
+    }
+    firebaseCollectionService.update("debitSum", {
+      'debitAmountSum': debitAmountSum.toString(),
+    });
+
+    print("AAAAAAAAAAAAAAAA" + debitAmountSum.toString());
   }
 
   late CollectionReference _ref =
@@ -415,7 +745,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
   }
 }
 
-Container card2(double pageWidth, double pageHeight) {
+Container card1(double pageWidth, double pageHeight) {
   return Container(
     width: pageWidth,
     height: pageHeight * 0.25,
@@ -432,13 +762,68 @@ Container card2(double pageWidth, double pageHeight) {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          Text(
-            "${debitAmountSum}zł",
-            style:
-                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
-          ),
+          changeView ? getTotalDebit() : getDebitAmountSum()
         ],
       ),
     ),
   );
+}
+
+StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum() {
+  return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("users/anil/amounts")
+          .doc("debitSum")
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text('Something went wrong');
+        }
+
+        if (snapshot.hasData) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          debitAmountSum = int.parse(data["debitAmountSum"]);
+
+          return Text(
+            "${debitAmountSum}" + "zl",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          );
+        }
+        return CircularProgressIndicator();
+      });
+}
+
+StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
+  return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("users/anil/amounts")
+          .doc("userDebit")
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text('Something went wrong');
+        }
+
+        if (snapshot.hasData) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          user1Debit = int.parse(data["user1"]);
+          user2Debit = int.parse(data["user2"]);
+          var userDebitSum = user1Debit +
+              user2Debit; //int.parse(data["user1"]) + int.parse(data["user2"]);
+
+          return Text(
+            "Total Debit : " + "${userDebitSum}" + "zl",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          );
+        }
+        return CircularProgressIndicator();
+      });
 }
