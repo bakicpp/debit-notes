@@ -60,45 +60,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                     ),
                     seperateAmountTf(user2SeperateDebitController, "İbrahim"),
                     const Spacer(),
-                    Container(
-                      height: 50,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 250, 161, 45),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            if (user1SeperateDebitController.text != "") {
-                              user1Debit +=
-                                  int.parse(user1SeperateDebitController.text);
-                              debitAmountSum -=
-                                  int.parse(user1SeperateDebitController.text);
-                              updateUserDebitsBySeperate();
-                              user1SeperateDebitController.clear();
-                            }
-                            if (user2SeperateDebitController.text != "") {
-                              debitAmountSum -=
-                                  int.parse(user2SeperateDebitController.text);
-                              user2Debit +=
-                                  int.parse(user2SeperateDebitController.text);
-                              updateUserDebitsBySeperate();
-                              user2SeperateDebitController.clear();
-                            }
-                          });
-                        },
-                        child: Text(
-                          'Add Seperate Payment',
-                          style: GoogleFonts.prompt(
-                              color: const Color(0xffFFFFFF),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
+                    addSeperateButton(),
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
@@ -107,6 +69,54 @@ class _FirstCardPageState extends State<FirstCardPage> {
               )),
         );
       },
+    );
+  }
+
+  Container addSeperateButton() {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromARGB(255, 250, 161, 45),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            if (user1SeperateDebitController.text != "" &&
+                user2SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user1SeperateDebitController.text);
+              debitAmountSum -= int.parse(user2SeperateDebitController.text);
+              user1Debit += int.parse(user1SeperateDebitController.text);
+              user2Debit += int.parse(user2SeperateDebitController.text);
+              updateUserDebitsBySeperate();
+              user1SeperateDebitController.clear();
+              user2SeperateDebitController.clear();
+            }
+            if (user1SeperateDebitController.text != "") {
+              user1Debit += int.parse(user1SeperateDebitController.text);
+              debitAmountSum -= int.parse(user1SeperateDebitController.text);
+              updateUserDebitsBySeperate();
+              user1SeperateDebitController.clear();
+            }
+            if (user2SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user2SeperateDebitController.text);
+              user2Debit += int.parse(user2SeperateDebitController.text);
+              updateUserDebitsBySeperate();
+              user2SeperateDebitController.clear();
+            }
+          });
+        },
+        child: Text(
+          'Add Seperate Payment',
+          style: GoogleFonts.prompt(
+              color: const Color(0xffFFFFFF),
+              fontSize: 18,
+              fontWeight: FontWeight.w600),
+        ),
+      ),
     );
   }
 
@@ -170,28 +180,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
-                    Container(
-                      height: 50,
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 250, 161, 45),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {
-                          _showInBottomSheet(context);
-                        },
-                        child: Text(
-                          'Add Seperate Payment',
-                          style: GoogleFonts.prompt(
-                              color: const Color(0xffFFFFFF),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
+                    openSeperateBottomSheet(context),
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
@@ -200,6 +189,31 @@ class _FirstCardPageState extends State<FirstCardPage> {
               )),
         );
       },
+    );
+  }
+
+  Container openSeperateBottomSheet(BuildContext context) {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromARGB(255, 250, 161, 45),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: () {
+          _showInBottomSheet(context);
+        },
+        child: Text(
+          'Add Seperate Payment',
+          style: GoogleFonts.prompt(
+              color: const Color(0xffFFFFFF),
+              fontSize: 18,
+              fontWeight: FontWeight.w600),
+        ),
+      ),
     );
   }
 
@@ -583,6 +597,8 @@ class _FirstCardPageState extends State<FirstCardPage> {
     firebaseCollectionService.update("debitSum", {
       'debitAmountSum': debitAmountSum.toString(),
     });
+
+    print("AAAAAAAAAAAAAAAA" + debitAmountSum.toString());
   }
 
   late CollectionReference _ref =
