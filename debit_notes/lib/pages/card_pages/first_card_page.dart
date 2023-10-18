@@ -319,37 +319,39 @@ class _FirstCardPageState extends State<FirstCardPage> {
           if (snapshot.hasError) {
             return const Text('Something went wrong');
           }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          /*if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
-          }
+          }*/
 
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
+          if (snapshot.hasData) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
 
-          return Expanded(
-            child: SizedBox(
-              width: pageWidth * 0.2,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                controller: user1DebitController,
-                onSubmitted: (value) {
-                  setState(() {
-                    user1Debit = int.parse(value);
-                    updateUserDebits();
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: data["user1"].toString() + "zl",
-                  contentPadding: EdgeInsets.only(left: 20),
-                  hintStyle: GoogleFonts.prompt(
-                      fontSize: 22,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
+            return Expanded(
+              child: SizedBox(
+                width: pageWidth * 0.2,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: user1DebitController,
+                  onSubmitted: (value) {
+                    setState(() {
+                      user1Debit = int.parse(value);
+                      updateUserDebits();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: data["user1"].toString() + "zl",
+                    contentPadding: EdgeInsets.only(left: 20),
+                    hintStyle: GoogleFonts.prompt(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          }
+          return CircularProgressIndicator();
         });
   }
 
@@ -365,36 +367,35 @@ class _FirstCardPageState extends State<FirstCardPage> {
             return const Text('Something went wrong');
           }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          }
+          if (snapshot.hasData) {
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
 
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
-
-          return Expanded(
-            child: SizedBox(
-              width: pageWidth * 0.2,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                controller: user2DebitController,
-                onSubmitted: (value) {
-                  setState(() {
-                    user2Debit = int.parse(value);
-                    updateUserDebits();
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: data["user2"].toString() + "zl",
-                  contentPadding: EdgeInsets.only(left: 20),
-                  hintStyle: GoogleFonts.prompt(
-                      fontSize: 22,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500),
+            return Expanded(
+              child: SizedBox(
+                width: pageWidth * 0.2,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: user2DebitController,
+                  onSubmitted: (value) {
+                    setState(() {
+                      user2Debit = int.parse(value);
+                      updateUserDebits();
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: data["user2"].toString() + "zl",
+                    contentPadding: EdgeInsets.only(left: 20),
+                    hintStyle: GoogleFonts.prompt(
+                        fontSize: 22,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          }
+          return CircularProgressIndicator();
         });
   }
 
@@ -413,12 +414,16 @@ class _FirstCardPageState extends State<FirstCardPage> {
   }
 
   void updateUserDebits() {
-    if (user1DebitController.text != "" && user2DebitController.text != "") {
+    if (user1DebitController.text != "") {
       firebaseCollectionService.update("userDebit", {
         'user1': user1DebitController.text,
-        'user2': user2DebitController.text,
       });
       user1DebitController.clear();
+    }
+    if (user2DebitController.text != "") {
+      firebaseCollectionService.update("userDebit", {
+        'user2': user2DebitController.text,
+      });
       user2DebitController.clear();
     }
   }
@@ -609,18 +614,19 @@ StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
           return const Text('Something went wrong');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+        if (snapshot.hasData) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+
+          var userDebitSum =
+              int.parse(data["user1"]) + int.parse(data["user2"]);
+
+          return Text(
+            "Total Debit : " + "${userDebitSum}" + "zl",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          );
         }
-
-        Map<String, dynamic> data =
-            snapshot.data!.data() as Map<String, dynamic>;
-
-        var userDebitSum = int.parse(data["user1"]) + int.parse(data["user2"]);
-
-        return Text(
-          "Total Debit : " + "${userDebitSum}" + "zl",
-          style: GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
-        );
+        return CircularProgressIndicator();
       });
 }
