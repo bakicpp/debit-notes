@@ -584,7 +584,7 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
   void updateUserDebitsBySeperate() {
     if (user1SeperateDebitController.text != "") {
       user1.update("userDebit", {
-        'user1': user1Debit.toString(),
+        'user2': user1Debit.toString(),
       });
       user1SeperateDebitController.clear();
     }

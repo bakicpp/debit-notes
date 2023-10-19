@@ -590,7 +590,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
     }
     if (user2SeperateDebitController.text != "") {
       user2.update("userDebit", {
-        'user2': user2Debit.toString(),
+        'user1': user2Debit.toString(),
       });
       user2SeperateDebitController.clear();
     }
