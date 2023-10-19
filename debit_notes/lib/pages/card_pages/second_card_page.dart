@@ -95,14 +95,25 @@ class _SecondCardPageState extends State<SecondCardPage> {
 
             updateDebitSum();
 
-            if (user1SeperateDebitController.text != "") {
+            if (user1SeperateDebitController.text != "" &&
+                user2SeperateDebitController.text != "") {
               _refUser1.update("userDebit", {
                 "user1": (user1Debit +=
                         int.parse(user1SeperateDebitController.text))
                     .toString()
               });
-            }
-            if (user2SeperateDebitController.text != "") {
+              _refUser2.update("userDebit", {
+                "user2": (user2Debit +=
+                        int.parse(user2SeperateDebitController.text))
+                    .toString()
+              });
+            } else if (user1SeperateDebitController.text != "") {
+              _refUser1.update("userDebit", {
+                "user1": (user1Debit +=
+                        int.parse(user1SeperateDebitController.text))
+                    .toString()
+              });
+            } else if (user2SeperateDebitController.text != "") {
               _refUser2.update("userDebit", {
                 "user2": (user2Debit +=
                         int.parse(user2SeperateDebitController.text))
