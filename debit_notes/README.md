@@ -1,4 +1,4 @@
-# debit_notes v0.1
+# debit_notes v0.2
 
 A new Flutter project.
 
