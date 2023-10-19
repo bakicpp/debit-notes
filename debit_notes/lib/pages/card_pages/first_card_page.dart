@@ -90,19 +90,24 @@ class _FirstCardPageState extends State<FirstCardPage> {
         ),
         onPressed: () {
           setState(() {
-            user1Debit += int.parse(user1SeperateDebitController.text);
-            user2Debit += int.parse(user2SeperateDebitController.text);
-
             debitAmountSum -= int.parse(user1SeperateDebitController.text);
             debitAmountSum -= int.parse(user2SeperateDebitController.text);
 
             updateDebitSum();
 
             if (user1SeperateDebitController.text != "") {
-              _refUser1.update("userDebit", {"user1": user1Debit.toString()});
+              _refUser1.update("userDebit", {
+                "user1": (user1Debit +=
+                        int.parse(user1SeperateDebitController.text))
+                    .toString()
+              });
             }
             if (user2SeperateDebitController.text != "") {
-              _refUser2.update("userDebit", {"user2": user2Debit.toString()});
+              _refUser2.update("userDebit", {
+                "user2": (user2Debit +=
+                        int.parse(user2SeperateDebitController.text))
+                    .toString()
+              });
             }
             user1SeperateDebitController.clear();
             user2SeperateDebitController.clear();
@@ -471,6 +476,8 @@ class _FirstCardPageState extends State<FirstCardPage> {
             Map<String, dynamic> data =
                 snapshot.data!.data() as Map<String, dynamic>;
 
+            user1Debit = int.parse(data["user1"].toString());
+
             return Expanded(
               child: SizedBox(
                 width: pageWidth * 0.2,
@@ -515,6 +522,8 @@ class _FirstCardPageState extends State<FirstCardPage> {
           if (snapshot.hasData) {
             Map<String, dynamic> data =
                 snapshot.data!.data() as Map<String, dynamic>;
+
+            user2Debit = int.parse(data["user2"].toString());
 
             return Expanded(
               child: SizedBox(

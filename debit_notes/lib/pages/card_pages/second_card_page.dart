@@ -72,6 +72,11 @@ class _SecondCardPageState extends State<SecondCardPage> {
     );
   }
 
+  FirebaseCollectionService _refUser1 =
+      FirebaseCollectionService("users/baki/amounts");
+  FirebaseCollectionService _refUser2 =
+      FirebaseCollectionService("users/ibrahim/amounts");
+
   Container addSeperateButton() {
     return Container(
       height: 50,
@@ -85,28 +90,27 @@ class _SecondCardPageState extends State<SecondCardPage> {
         ),
         onPressed: () {
           setState(() {
-            if (user1SeperateDebitController.text != "" &&
-                user2SeperateDebitController.text != "") {
-              debitAmountSum -= int.parse(user1SeperateDebitController.text);
-              debitAmountSum -= int.parse(user2SeperateDebitController.text);
-              user1Debit += int.parse(user1SeperateDebitController.text);
-              user2Debit += int.parse(user2SeperateDebitController.text);
-              updateUserDebitsBySeperate();
-              user1SeperateDebitController.clear();
-              user2SeperateDebitController.clear();
-            }
+            debitAmountSum -= int.parse(user1SeperateDebitController.text);
+            debitAmountSum -= int.parse(user2SeperateDebitController.text);
+
+            updateDebitSum();
+
             if (user1SeperateDebitController.text != "") {
-              user1Debit += int.parse(user1SeperateDebitController.text);
-              debitAmountSum -= int.parse(user1SeperateDebitController.text);
-              updateUserDebitsBySeperate();
-              user1SeperateDebitController.clear();
+              _refUser1.update("userDebit", {
+                "user1": (user1Debit +=
+                        int.parse(user1SeperateDebitController.text))
+                    .toString()
+              });
             }
             if (user2SeperateDebitController.text != "") {
-              debitAmountSum -= int.parse(user2SeperateDebitController.text);
-              user2Debit += int.parse(user2SeperateDebitController.text);
-              updateUserDebitsBySeperate();
-              user2SeperateDebitController.clear();
+              _refUser2.update("userDebit", {
+                "user2": (user2Debit +=
+                        int.parse(user2SeperateDebitController.text))
+                    .toString()
+              });
             }
+            user1SeperateDebitController.clear();
+            user2SeperateDebitController.clear();
           });
         },
         child: Text(
@@ -472,6 +476,8 @@ class _SecondCardPageState extends State<SecondCardPage> {
             Map<String, dynamic> data =
                 snapshot.data!.data() as Map<String, dynamic>;
 
+            user1Debit = int.parse(data["user1"].toString());
+
             return Expanded(
               child: SizedBox(
                 width: pageWidth * 0.2,
@@ -516,6 +522,8 @@ class _SecondCardPageState extends State<SecondCardPage> {
           if (snapshot.hasData) {
             Map<String, dynamic> data =
                 snapshot.data!.data() as Map<String, dynamic>;
+
+            user2Debit = int.parse(data["user2"].toString());
 
             return Expanded(
               child: SizedBox(
@@ -573,32 +581,6 @@ class _SecondCardPageState extends State<SecondCardPage> {
       });
       user2DebitController.clear();
     }
-  }
-
-  FirebaseCollectionService user1 =
-      FirebaseCollectionService('users/baki/amounts');
-
-  FirebaseCollectionService user2 =
-      FirebaseCollectionService('users/ibrahim/amounts');
-
-  void updateUserDebitsBySeperate() {
-    if (user1SeperateDebitController.text != "") {
-      user1.update("userDebit", {
-        'user1': user1Debit.toString(),
-      });
-      user1SeperateDebitController.clear();
-    }
-    if (user2SeperateDebitController.text != "") {
-      user2.update("userDebit", {
-        'user1': user2Debit.toString(),
-      });
-      user2SeperateDebitController.clear();
-    }
-    firebaseCollectionService.update("debitSum", {
-      'debitAmountSum': debitAmountSum.toString(),
-    });
-
-    print("AAAAAAAAAAAAAAAA" + debitAmountSum.toString());
   }
 
   late CollectionReference _ref =
