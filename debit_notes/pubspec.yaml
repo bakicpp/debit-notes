@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^4.9.3
   page_transition: ^2.1.0
   animated_flip_counter: ^0.2.6
+  font_awesome_flutter: ^10.6.0
 
 dev_dependencies:
   flutter_test:

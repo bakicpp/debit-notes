@@ -1,8 +1,10 @@
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 int debitAmountSum = 0;
@@ -351,7 +353,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
                 changeView = !changeView;
               });
             },
-            icon: const Icon(Icons.swap_horiz),
+            icon: const Icon(FontAwesomeIcons.repeat),
           ),
         ],
         leading: IconButton(
@@ -788,6 +790,12 @@ StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum() {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           );
+
+          /*AnimatedFlipCounter(
+              suffix: " zl",
+              textStyle:
+                  GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+              value: debitAmountSum);*/
         }
         return CircularProgressIndicator();
       });
