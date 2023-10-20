@@ -5,6 +5,7 @@ import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -57,8 +58,9 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
+          PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child:
                   const ThirdCardPage()), // İkinci ekranın adı "SecondScreen"
         );
       },
@@ -83,8 +85,9 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
+          PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child:
                   const SecondCardPage()), // İkinci ekranın adı "SecondScreen"
         );
       },
@@ -109,8 +112,9 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
+          PageTransition(
+              type: PageTransitionType.rightToLeft,
+              child:
                   const FirstCardPage()), // İkinci ekranın adı "SecondScreen"
         );
       },
