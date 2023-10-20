@@ -1,9 +1,11 @@
-import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flip_card/flipcard/flip_card.dart';
+import 'package:flutter_flip_card/flutter_flip_card.dart';
+import 'package:flutter_flip_card/modal/flip_side.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,6 +24,7 @@ class FirstCardPage extends StatefulWidget {
 class _FirstCardPageState extends State<FirstCardPage> {
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  final flipCardController = FlipCardController();
 
   @override
   void initState() {
@@ -374,6 +377,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
               setState(() {
                 changeView = !changeView;
               });
+              flipCardController.flipcard();
             },
             icon: const Icon(FontAwesomeIcons.repeat),
           ),
@@ -396,7 +400,7 @@ class _FirstCardPageState extends State<FirstCardPage> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              card1(pageWidth, pageHeight),
+              card1(pageWidth, pageHeight, flipCardController),
               SizedBox(
                 height: pageHeight * 0.05,
               ),
@@ -775,7 +779,22 @@ class _FirstCardPageState extends State<FirstCardPage> {
   }
 }
 
-Container card1(double pageWidth, double pageHeight) {
+Padding card1(double pageWidth, double pageHeight, flipCardController) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: pageWidth * 0.03),
+    child: FlipCard(
+      animationDuration: const Duration(milliseconds: 300),
+      onTapFlipping: true,
+      axis: FlipAxis.horizontal,
+      frontWidget: card1Front(pageWidth, pageHeight),
+      backWidget: card1Back(pageWidth, pageHeight),
+      controller: flipCardController,
+      rotateSide: RotateSide.right,
+    ),
+  );
+}
+
+Container card1Front(double pageWidth, double pageHeight) {
   return Container(
     width: pageWidth,
     height: pageHeight * 0.25,
@@ -792,7 +811,31 @@ Container card1(double pageWidth, double pageHeight) {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          changeView ? getTotalDebit() : getDebitAmountSum()
+          getDebitAmountSum()
+        ],
+      ),
+    ),
+  );
+}
+
+Container card1Back(double pageWidth, double pageHeight) {
+  return Container(
+    width: pageWidth,
+    height: pageHeight * 0.25,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16), color: CardColors.red),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Baki",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          ),
+          getTotalDebit()
         ],
       ),
     ),
