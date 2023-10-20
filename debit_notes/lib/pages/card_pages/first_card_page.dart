@@ -226,12 +226,21 @@ class _FirstCardPageState extends State<FirstCardPage> {
         onPressed: () {
           _showInBottomSheet(context);
         },
-        child: Text(
-          'Add Seperate Payment',
-          style: GoogleFonts.prompt(
-              color: const Color(0xffFFFFFF),
-              fontSize: 18,
-              fontWeight: FontWeight.w600),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(FontAwesomeIcons.divide, color: Colors.white, size: 22),
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              'Add Seperate Payment',
+              style: GoogleFonts.prompt(
+                  color: const Color(0xffFFFFFF),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     );
@@ -275,12 +284,25 @@ class _FirstCardPageState extends State<FirstCardPage> {
           ),
         ),
         onPressed: addPayment,
-        child: Text(
-          'Add Payment',
-          style: GoogleFonts.prompt(
-              color: const Color(0xffFFFFFF),
-              fontSize: 18,
-              fontWeight: FontWeight.w600),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              FontAwesomeIcons.squarePlus,
+              color: Colors.white,
+              size: 22,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(
+              'Add Payment',
+              style: GoogleFonts.prompt(
+                  color: const Color(0xffFFFFFF),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     );
@@ -402,12 +424,22 @@ class _FirstCardPageState extends State<FirstCardPage> {
           onPressed: () {
             _showBottomSheet(context);
           },
-          child: Text(
-            'Add Payment',
-            style: GoogleFonts.prompt(
-                color: const Color(0xffFFFFFF),
-                fontSize: 18,
-                fontWeight: FontWeight.w600),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(FontAwesomeIcons.squarePlus,
+                  color: Colors.white, size: 22),
+              const SizedBox(
+                width: 8,
+              ),
+              Text(
+                'Add Payment',
+                style: GoogleFonts.prompt(
+                    color: const Color(0xffFFFFFF),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600),
+              ),
+            ],
           ),
         ),
       ),

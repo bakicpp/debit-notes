@@ -226,12 +226,25 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
         onPressed: () {
           _showInBottomSheet(context);
         },
-        child: Text(
-          'Add Seperate Payment',
-          style: GoogleFonts.prompt(
-              color: const Color(0xffFFFFFF),
-              fontSize: 18,
-              fontWeight: FontWeight.w600),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              FontAwesomeIcons.divide,
+              color: Colors.white,
+              size: 22,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(
+              'Add Seperate Payment',
+              style: GoogleFonts.prompt(
+                  color: const Color(0xffFFFFFF),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+          ],
         ),
       ),
     );
@@ -265,25 +278,37 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
 
   Container addPaymentButton(BuildContext context) {
     return Container(
-      height: 50,
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: const Color(0xff41C23F),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        height: 50,
+        width: double.infinity,
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: const Color(0xff41C23F),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-        ),
-        onPressed: addPayment,
-        child: Text(
-          'Add Payment',
-          style: GoogleFonts.prompt(
-              color: const Color(0xffFFFFFF),
-              fontSize: 18,
-              fontWeight: FontWeight.w600),
-        ),
-      ),
-    );
+          onPressed: addPayment,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                FontAwesomeIcons.squarePlus,
+                color: Colors.white,
+                size: 22,
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Text(
+                'Add Payment',
+                style: GoogleFonts.prompt(
+                    color: const Color(0xffFFFFFF),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ));
   }
 
   TextFormField descriptionTextField() {
@@ -402,12 +427,25 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
           onPressed: () {
             _showBottomSheet(context);
           },
-          child: Text(
-            'Add Payment',
-            style: GoogleFonts.prompt(
-                color: const Color(0xffFFFFFF),
-                fontSize: 18,
-                fontWeight: FontWeight.w600),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                FontAwesomeIcons.squarePlus,
+                color: Colors.white,
+                size: 22,
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Text(
+                'Add Payment',
+                style: GoogleFonts.prompt(
+                    color: const Color(0xffFFFFFF),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600),
+              ),
+            ],
           ),
         ),
       ),
