@@ -31,6 +31,8 @@ class _SecondCardPageState extends State<SecondCardPage> {
 
   TextEditingController user2SeperateDebitController = TextEditingController();
 
+  TextEditingController selfSeperateDebitController = TextEditingController();
+
   void _showInBottomSheet(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
 
@@ -59,6 +61,10 @@ class _SecondCardPageState extends State<SecondCardPage> {
                       height: pageHeight * 0.03,
                     ),
                     seperateAmountTf(user2SeperateDebitController, "İbrahim"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    seperateAmountTf(selfSeperateDebitController, "Self"),
                     const Spacer(),
                     addSeperateButton(),
                     SizedBox(
@@ -90,8 +96,17 @@ class _SecondCardPageState extends State<SecondCardPage> {
         ),
         onPressed: () {
           setState(() {
-            debitAmountSum -= int.parse(user1SeperateDebitController.text);
-            debitAmountSum -= int.parse(user2SeperateDebitController.text);
+            if (user1SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user1SeperateDebitController.text);
+            }
+
+            if (user2SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user2SeperateDebitController.text);
+            }
+
+            if (selfSeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(selfSeperateDebitController.text);
+            }
 
             updateDebitSum();
 
@@ -122,6 +137,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
             }
             user1SeperateDebitController.clear();
             user2SeperateDebitController.clear();
+            selfSeperateDebitController.clear();
           });
         },
         child: Text(
