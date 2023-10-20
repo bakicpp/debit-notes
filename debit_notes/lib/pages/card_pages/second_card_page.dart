@@ -103,7 +103,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
                     .toString()
               });
               _refUser2.update("userDebit", {
-                "user2": (user2Debit +=
+                "user1": (user2Debit +=
                         int.parse(user2SeperateDebitController.text))
                     .toString()
               });
