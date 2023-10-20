@@ -3,6 +3,7 @@ import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 int debitAmountSum = 0;
@@ -364,7 +365,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
                 changeView = !changeView;
               });
             },
-            icon: const Icon(Icons.swap_horiz),
+            icon: const Icon(FontAwesomeIcons.repeat),
           ),
         ],
         leading: IconButton(
