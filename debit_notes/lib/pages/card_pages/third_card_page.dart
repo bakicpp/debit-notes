@@ -31,6 +31,8 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
 
   TextEditingController user2SeperateDebitController = TextEditingController();
 
+  TextEditingController selfSeperateDebitController = TextEditingController();
+
   void _showInBottomSheet(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
 
@@ -59,6 +61,10 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
                       height: pageHeight * 0.03,
                     ),
                     seperateAmountTf(user2SeperateDebitController, "Baki"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    seperateAmountTf(selfSeperateDebitController, "Self"),
                     const Spacer(),
                     addSeperateButton(),
                     SizedBox(
@@ -90,8 +96,17 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
         ),
         onPressed: () {
           setState(() {
-            debitAmountSum -= int.parse(user1SeperateDebitController.text);
-            debitAmountSum -= int.parse(user2SeperateDebitController.text);
+            if (user1SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user1SeperateDebitController.text);
+            }
+
+            if (user2SeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(user2SeperateDebitController.text);
+            }
+
+            if (selfSeperateDebitController.text != "") {
+              debitAmountSum -= int.parse(selfSeperateDebitController.text);
+            }
 
             updateDebitSum();
 
