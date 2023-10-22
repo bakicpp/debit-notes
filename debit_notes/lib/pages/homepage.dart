@@ -67,8 +67,14 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         width: pageWidth,
         height: pageHeight * 0.25,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16), color: CardColors.green),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            spreadRadius: 0,
+            blurRadius: 4,
+            offset: const Offset(0, 4), // changes position of shadow
+          ),
+        ], borderRadius: BorderRadius.circular(16), color: CardColors.green),
         child: Container(
           width: pageWidth,
           height: pageHeight * 0.25,
@@ -94,8 +100,14 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         width: pageWidth,
         height: pageHeight * 0.25,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16), color: CardColors.pink),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            spreadRadius: 0,
+            blurRadius: 4,
+            offset: const Offset(0, 4), // changes position of shadow
+          ),
+        ], borderRadius: BorderRadius.circular(16), color: CardColors.pink),
         child: Container(
           width: pageWidth,
           height: pageHeight * 0.25,
@@ -121,8 +133,14 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         width: pageWidth,
         height: pageHeight * 0.25,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16), color: CardColors.red),
+        decoration: BoxDecoration(boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            spreadRadius: 0,
+            blurRadius: 4,
+            offset: const Offset(0, 4), // changes position of shadow
+          ),
+        ], borderRadius: BorderRadius.circular(16), color: CardColors.red),
         child: cardContent("baki", "Baki"),
       ),
     );
