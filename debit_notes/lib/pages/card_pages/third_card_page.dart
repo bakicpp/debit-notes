@@ -3,6 +3,7 @@ import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,6 +27,9 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      changeView = false;
+    });
   }
 
   TextEditingController user1SeperateDebitController = TextEditingController();
@@ -374,6 +378,7 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
         actions: [
           IconButton(
             onPressed: () {
+              flipCardController.flipcard();
               setState(() {
                 changeView = !changeView;
               });
@@ -399,7 +404,7 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              card1(pageWidth, pageHeight),
+              card1(pageWidth, pageHeight, flipCardController),
               SizedBox(
                 height: pageHeight * 0.05,
               ),
@@ -780,7 +785,24 @@ class _ThirdCardPageState extends State<ThirdCardPage> {
   }
 }
 
-Container card1(double pageWidth, double pageHeight) {
+final flipCardController = FlipCardController();
+
+Padding card1(double pageWidth, double pageHeight, flipCardController) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: pageWidth * 0.03),
+    child: FlipCard(
+      animationDuration: const Duration(milliseconds: 300),
+      onTapFlipping: true,
+      axis: FlipAxis.horizontal,
+      frontWidget: card1Front(pageWidth, pageHeight),
+      backWidget: card1Back(pageWidth, pageHeight),
+      controller: flipCardController,
+      rotateSide: RotateSide.right,
+    ),
+  );
+}
+
+Container card1Front(double pageWidth, double pageHeight) {
   return Container(
     width: pageWidth,
     height: pageHeight * 0.25,
@@ -797,7 +819,31 @@ Container card1(double pageWidth, double pageHeight) {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          changeView ? getTotalDebit() : getDebitAmountSum()
+          getDebitAmountSum()
+        ],
+      ),
+    ),
+  );
+}
+
+Container card1Back(double pageWidth, double pageHeight) {
+  return Container(
+    width: pageWidth,
+    height: pageHeight * 0.25,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16), color: CardColors.pink),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "İbrahim",
+            style:
+                GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
+          ),
+          getTotalDebit()
         ],
       ),
     ),
