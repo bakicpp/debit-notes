@@ -79,7 +79,7 @@ class EmptyPageButtons extends StatelessWidget {
 }
 
 class HomePageTextField extends StatelessWidget {
-  const HomePageTextField({super.key, required this.hintText});
+  const HomePageTextField({super.key, required this.hintText, required});
 
   final String? hintText;
 

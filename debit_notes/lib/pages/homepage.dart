@@ -88,29 +88,104 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
-                    SizedBox(
-                      height: pageHeight / 16,
-                      width: pageWidth,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.purpleAccent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              )),
-                          onPressed: () {},
-                          child: Text(
-                            "Create Group",
-                            style: GoogleFonts.manrope(
-                                fontSize: 18,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700),
-                          )),
-                    )
+                    createGroupButton(pageHeight, pageWidth)
                   ],
                 ),
               )),
         );
       },
+    );
+  }
+
+  SizedBox createGroupButton(double pageHeight, double pageWidth) {
+    return SizedBox(
+      height: pageHeight / 16,
+      width: pageWidth,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.purpleAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              )),
+          onPressed: () {},
+          child: Text(
+            "Create Group",
+            style: GoogleFonts.manrope(
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+          )),
+    );
+  }
+
+  void joinGroupScreen(BuildContext context) {
+    var pageHeight = MediaQuery.of(context).size.height;
+    var pageWidth = MediaQuery.of(context).size.height;
+
+    showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: pageHeight * 0.8,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Center(
+                      child: Text(
+                        "Join a Group with PIN",
+                        style: GoogleFonts.prompt(
+                            fontSize: 24, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Text(
+                      "Enter the group code",
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.02,
+                    ),
+                    const HomePageTextField(hintText: "Ex: DN4234"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    joinGroupButton(pageHeight, pageWidth)
+                  ],
+                ),
+              )),
+        );
+      },
+    );
+  }
+
+  SizedBox joinGroupButton(double pageHeight, double pageWidth) {
+    return SizedBox(
+      height: pageHeight / 16,
+      width: pageWidth,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.purpleAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              )),
+          onPressed: () {},
+          child: Text(
+            "Join a Group",
+            style: GoogleFonts.manrope(
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+          )),
     );
   }
 
@@ -188,9 +263,11 @@ class _HomePageState extends State<HomePage> {
           width: pageWidth / 28,
         ),
         EmptyPageButtons(
-            pageHeight: pageHeight,
-            pageWidth: pageWidth,
-            buttonText: "Join Group")
+          pageHeight: pageHeight,
+          pageWidth: pageWidth,
+          buttonText: "Join Group",
+          onTap: () => joinGroupScreen(context),
+        )
       ],
     );
   }
