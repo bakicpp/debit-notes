@@ -558,7 +558,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: data["user1"].toString() + "zl",
+                    hintText: data["user1"].toString() + "zł",
                     contentPadding: EdgeInsets.only(left: 20),
                     hintStyle: GoogleFonts.prompt(
                         fontSize: 22,
@@ -605,7 +605,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: data["user2"].toString() + "zl",
+                    hintText: data["user2"].toString() + "zł",
                     contentPadding: EdgeInsets.only(left: 20),
                     hintStyle: GoogleFonts.prompt(
                         fontSize: 22,
@@ -690,7 +690,7 @@ class _SecondCardPageState extends State<SecondCardPage> {
       children: [
         Vectors.emptyState,
         Text(
-          "No item added yet.",
+          "No payment added yet.",
           style: GoogleFonts.manrope(
               fontSize: pageWidth / 25,
               fontWeight: FontWeight.w500,
@@ -836,7 +836,7 @@ StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum() {
           debitAmountSum = int.parse(data["debitAmountSum"]);
 
           return Text(
-            "${debitAmountSum}" + "zl",
+            "${debitAmountSum}" + "zł",
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           );
@@ -867,7 +867,7 @@ StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
               user2Debit; //int.parse(data["user1"]) + int.parse(data["user2"]);
 
           return Text(
-            "Total Debit : " + "${userDebitSum}" + "zl",
+            "Total Debit : " + "${userDebitSum}" + "zł",
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           );
