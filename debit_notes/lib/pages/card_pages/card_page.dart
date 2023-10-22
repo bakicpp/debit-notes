@@ -21,14 +21,14 @@ int user2Debit = 0;
 // this variable is used for changing view of card
 bool changeView = false;
 
-class FirstCardPage extends StatefulWidget {
-  const FirstCardPage({super.key});
+class CardPage extends StatefulWidget {
+  const CardPage({super.key});
 
   @override
-  State<FirstCardPage> createState() => _FirstCardPageState();
+  State<CardPage> createState() => _CardPageState();
 }
 
-class _FirstCardPageState extends State<FirstCardPage> {
+class _CardPageState extends State<CardPage> {
   //local variables
   TextEditingController amountController = TextEditingController();
 

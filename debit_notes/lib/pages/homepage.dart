@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
+import 'package:debit_notes/constants/vectors.dart';
+import 'package:debit_notes/constants/widgets.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -16,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
+
+  bool testMode = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,27 +35,70 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.symmetric(horizontal: pageWidth / 18),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: pageHeight * 0.05,
-                ),
-                card1(pageWidth, pageHeight),
-                SizedBox(
-                  height: pageHeight * 0.05,
-                ),
-                card2(pageWidth, pageHeight),
-                SizedBox(
-                  height: pageHeight * 0.05,
-                ),
-                card3(pageWidth, pageHeight),
-              ],
-            ),
+            child: testMode
+                ? noGroupView(pageHeight, pageWidth)
+                : Column(
+                    children: [
+                      SizedBox(
+                        height: pageHeight * 0.05,
+                      ),
+                      card1(pageWidth, pageHeight),
+                      SizedBox(
+                        height: pageHeight * 0.05,
+                      ),
+                      card2(pageWidth, pageHeight),
+                      SizedBox(
+                        height: pageHeight * 0.05,
+                      ),
+                      card3(pageWidth, pageHeight),
+                    ],
+                  ),
           ),
         ));
+  }
+
+  Column noGroupView(double pageHeight, double pageWidth) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: pageHeight / 8,
+          ),
+          Center(
+            child: SizedBox(
+              width: 250,
+              height: 250,
+              child: Vectors.emptyState,
+            ),
+          ),
+          Text("You don't have an group yet."),
+          SizedBox(
+            height: pageHeight / 20,
+          ),
+          buttonsRow(pageHeight, pageWidth)
+        ]);
+  }
+
+  Row buttonsRow(double pageHeight, double pageWidth) {
+    return Row(
+      children: [
+        EmptyPageButtons(
+            pageHeight: pageHeight,
+            pageWidth: pageWidth,
+            buttonText: "Create Group"),
+        SizedBox(
+          width: pageWidth / 28,
+        ),
+        EmptyPageButtons(
+            pageHeight: pageHeight,
+            pageWidth: pageWidth,
+            buttonText: "Join Group")
+      ],
+    );
   }
 
   GestureDetector card3(double pageWidth, double pageHeight) {
