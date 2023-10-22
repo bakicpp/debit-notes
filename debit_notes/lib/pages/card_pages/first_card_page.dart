@@ -616,11 +616,14 @@ class _FirstCardPageState extends State<FirstCardPage> {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("$item dismissed")));
     setState(() {
-      debitAmountSum =
-          debitAmountSum - int.parse(snap[index]["amount"] as String);
+      if (int.parse(snap[index]["amount"] as String) < debitAmountSum) {
+        debitAmountSum =
+            debitAmountSum - int.parse(snap[index]["amount"] as String);
+      } else {
+        debitAmountSum = 0;
+      }
       updateDebitSum();
     });
-    print("sum: $debitAmountSum");
   }
 
   void updateUserDebits() {
