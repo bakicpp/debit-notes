@@ -6,7 +6,6 @@ import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -21,6 +20,99 @@ class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
 
   bool testMode = true;
+
+  void createGroupScreen(BuildContext context) {
+    var pageHeight = MediaQuery.of(context).size.height;
+    var pageWidth = MediaQuery.of(context).size.height;
+
+    showModalBottomSheet(
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              height: pageHeight * 0.8,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Center(
+                      child: Text(
+                        "Create Group",
+                        style: GoogleFonts.prompt(
+                            fontSize: 24, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Text(
+                      "Group Name",
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.02,
+                    ),
+                    const HomePageTextField(hintText: "Your group's name"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Text(
+                      "First Friend",
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.02,
+                    ),
+                    const HomePageTextField(hintText: "First friend's name"),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Text(
+                      "Second Friend",
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.02,
+                    ),
+                    const HomePageTextField(hintText: "Second friend's name"),
+                    //openSeperateBottomSheet(context),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    SizedBox(
+                      height: pageHeight / 16,
+                      width: pageWidth,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.purpleAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              )),
+                          onPressed: () {},
+                          child: Text(
+                            "Create Group",
+                            style: GoogleFonts.manrope(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          )),
+                    )
+                  ],
+                ),
+              )),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +171,7 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: pageHeight / 20,
           ),
-          buttonsRow(pageHeight, pageWidth)
+          buttonsRow(pageHeight, pageWidth),
         ]);
   }
 
@@ -87,9 +179,11 @@ class _HomePageState extends State<HomePage> {
     return Row(
       children: [
         EmptyPageButtons(
-            pageHeight: pageHeight,
-            pageWidth: pageWidth,
-            buttonText: "Create Group"),
+          pageHeight: pageHeight,
+          pageWidth: pageWidth,
+          buttonText: "Create Group",
+          onTap: () => createGroupScreen(context),
+        ),
         SizedBox(
           width: pageWidth / 28,
         ),
