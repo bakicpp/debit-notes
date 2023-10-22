@@ -30,6 +30,9 @@ class _FirstCardPageState extends State<FirstCardPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      changeView = false;
+    });
   }
 
   TextEditingController user1SeperateDebitController = TextEditingController();
@@ -374,10 +377,10 @@ class _FirstCardPageState extends State<FirstCardPage> {
         actions: [
           IconButton(
             onPressed: () {
+              flipCardController.flipcard();
               setState(() {
                 changeView = !changeView;
               });
-              flipCardController.flipcard();
             },
             icon: const Icon(FontAwesomeIcons.repeat),
           ),
