@@ -16,14 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     var pageWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Debit Notes",
-            style: GoogleFonts.prompt(
-              fontSize: 30,
-              fontWeight: FontWeight.w600,
-            )),
-        centerTitle: true,
-      ),
+      appBar: appBar(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: pageWidth / 12),
         child: SingleChildScrollView(
@@ -45,6 +38,17 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar appBar() {
+    return AppBar(
+      title: Text("Debit Notes",
+          style: GoogleFonts.prompt(
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
+          )),
+      centerTitle: true,
     );
   }
 

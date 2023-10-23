@@ -1,5 +1,7 @@
 import 'package:debit_notes/constants/vectors.dart';
+import 'package:debit_notes/pages/homepage.dart';
 import 'package:debit_notes/pages/login_page.dart';
+import 'package:debit_notes/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -12,18 +14,44 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  bool isLoading = true;
+
+  void signUp() {
+    if (passwordController.text == confirmPasswordController.text) {
+      setState(() {
+        isLoading = true;
+      });
+      AuthService()
+          .registerWithEmailAndPassword(
+              emailController.text, passwordController.text)
+          .then((value) => {
+                if (value != null)
+                  {
+                    setState(() {
+                      isLoading = false;
+                    }),
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        PageTransition(
+                            duration: const Duration(milliseconds: 300),
+                            child: const HomePage(),
+                            type: PageTransitionType.rightToLeftWithFade),
+                        (route) => false)
+                  }
+              });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var pageWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Debit Notes",
-            style: GoogleFonts.prompt(
-              fontSize: 30,
-              fontWeight: FontWeight.w600,
-            )),
-        centerTitle: true,
-      ),
+      appBar: appBar(),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: pageWidth / 12),
         child: SingleChildScrollView(
@@ -50,8 +78,20 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
+  AppBar appBar() {
+    return AppBar(
+      title: Text("Debit Notes",
+          style: GoogleFonts.prompt(
+            fontSize: 30,
+            fontWeight: FontWeight.w600,
+          )),
+      centerTitle: true,
+    );
+  }
+
   TextFormField confirmPasswordTextField() {
     return TextFormField(
+      controller: confirmPasswordController,
       decoration: InputDecoration(
         labelText: "Confirm password",
         contentPadding: EdgeInsets.symmetric(vertical: 0),
@@ -87,19 +127,24 @@ class _SignUpPageState extends State<SignUpPage> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {},
-        child: Text("Sign Up",
-            style: GoogleFonts.manrope(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            )),
+        onPressed: signUp,
+        child: isLoading
+            ? CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : Text("Sign Up",
+                style: GoogleFonts.manrope(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                )),
       ),
     );
   }
 
   TextFormField passwordTextField() {
     return TextFormField(
+      controller: passwordController,
       decoration: InputDecoration(
         labelText: "Password",
         contentPadding: EdgeInsets.symmetric(vertical: 0),
@@ -109,6 +154,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   TextFormField emailTextField() {
     return TextFormField(
+      controller: emailController,
       decoration: InputDecoration(
         labelText: "Email",
         contentPadding: EdgeInsets.symmetric(vertical: 0),

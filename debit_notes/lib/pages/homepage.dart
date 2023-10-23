@@ -19,7 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
 
-  bool testMode = true;
+  bool testMode = false;
 
   void createGroupScreen(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
