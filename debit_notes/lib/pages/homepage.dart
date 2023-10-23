@@ -5,10 +5,11 @@ import 'package:debit_notes/constants/widgets.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
+import 'package:debit_notes/pages/login_page.dart';
 import 'package:debit_notes/services/auth_service.dart';
 import 'package:debit_notes/services/firebase_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -28,25 +29,28 @@ class _HomePageState extends State<HomePage> {
       FirebaseCollectionService("users");
 
   void hasGroupQuery() {
-    var hasGroupData = firebaseCollectionService.getByDocument(
+    var hasGroupData = firebaseCollectionService.getSnapshot(
         "${Auth().currentUser!.email}", "hasGroup");
 
+    print(hasGroupData.toString());
+
+    if (hasGroupData.toString() == "true") {
+      setState(() {
+        hasGroup = true;
+      });
+    }
     if (hasGroupData.toString() == "false") {
       setState(() {
         hasGroup = false;
-      });
-    } else {
-      setState(() {
-        hasGroup = true;
       });
     }
   }
 
   @override
   void initState() {
+    hasGroupQuery();
     // TODO: implement initState
     super.initState();
-    hasGroupQuery();
   }
 
   void createGroup() {
@@ -60,6 +64,13 @@ class _HomePageState extends State<HomePage> {
           firstFriendController.text,
           secondFriendController.text,
           yourNameController.text);
+      firebaseCollectionService.update("${Auth().currentUser!.email}", {
+        "hasGroup": true,
+      });
+      setState(() {
+        hasGroup = true;
+      });
+
       Navigator.pop(context);
     }
   }
@@ -274,6 +285,20 @@ class _HomePageState extends State<HomePage> {
             style:
                 GoogleFonts.prompt(fontSize: 48, fontWeight: FontWeight.w700),
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Auth().signOut().then((value) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        PageTransition(
+                            child: const LoginPage(),
+                            type: PageTransitionType.leftToRightWithFade),
+                        (route) => false);
+                  });
+                },
+                icon: Icon(FontAwesomeIcons.signOut))
+          ],
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: pageWidth / 18),

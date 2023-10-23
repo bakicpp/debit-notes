@@ -38,6 +38,17 @@ class FirebaseCollectionService<T> {
     }
   }
 
+  Stream getSnapshot(String docId, String dataField) {
+    var docRef = _firestore.collection(collectionName).doc(docId);
+    return docRef.snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return snapshot[dataField].toString();
+      } else {
+        return null;
+      }
+    });
+  }
+
   Future<void> createGroupDocument(
       String name,
       String inviteCode,
