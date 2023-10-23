@@ -22,6 +22,22 @@ class FirebaseCollectionService<T> {
     }
   }
 
+  Future<String?> getByDocument(String docId, String dataField) async {
+    try {
+      var usersCollection = _firestore.collection(collectionName);
+      var userDocument = await usersCollection.doc(docId).get();
+      if (userDocument.exists) {
+        var field = userDocument.data()?[dataField] as String?;
+        return field;
+      } else {
+        return null; // Belge bulunamazsa null döndürür
+      }
+    } catch (e) {
+      print('Hata oluştu: $e');
+      return null;
+    }
+  }
+
   Future<void> add(T item) async {
     await _firestore
         .collection(collectionName)

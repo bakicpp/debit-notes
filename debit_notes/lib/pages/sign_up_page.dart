@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/pages/homepage.dart';
 import 'package:debit_notes/pages/login_page.dart';
 import 'package:debit_notes/services/auth_service.dart';
+import 'package:debit_notes/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,11 +24,33 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool isLoading = false;
 
-  void signUp() async {
+  FirebaseCollectionService firebaseCollectionService =
+      FirebaseCollectionService("users");
+
+  Future<void> signUp() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: emailController.text, password: passwordController.text);
+              email: emailController.text, password: passwordController.text)
+          .then((value) {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(emailController.text)
+            .set({
+          "email": emailController.text,
+          "password": passwordController.text,
+          "hasGroup": false
+        });
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            PageTransition(
+                child: const HomePage(),
+                type: PageTransitionType.rightToLeftWithFade),
+            (route) => false);
+
+        return value;
+      });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');

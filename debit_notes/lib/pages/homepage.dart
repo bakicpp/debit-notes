@@ -5,6 +5,9 @@ import 'package:debit_notes/constants/widgets.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
+import 'package:debit_notes/services/auth_service.dart';
+import 'package:debit_notes/services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -19,7 +22,32 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
 
-  bool testMode = false;
+  bool hasGroup = false;
+
+  FirebaseCollectionService firebaseCollectionService =
+      FirebaseCollectionService("users");
+
+  void hasGroupQuery() {
+    var hasGroupData = firebaseCollectionService.getByDocument(
+        "${Auth().currentUser!.email}", "hasGroup");
+
+    if (hasGroupData.toString() == "false") {
+      setState(() {
+        hasGroup = false;
+      });
+    } else {
+      setState(() {
+        hasGroup = true;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    hasGroupQuery();
+  }
 
   void createGroupScreen(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
@@ -205,7 +233,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: pageWidth / 18),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: testMode
+            child: hasGroup
                 ? noGroupView(pageHeight, pageWidth)
                 : Column(
                     children: [
