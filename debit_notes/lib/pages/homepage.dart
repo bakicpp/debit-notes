@@ -49,6 +49,26 @@ class _HomePageState extends State<HomePage> {
     hasGroupQuery();
   }
 
+  void createGroup() {
+    if (groupNameController.text != "" &&
+        firstFriendController.text != "" &&
+        secondFriendController.text != "") {
+      firebaseCollectionService.createGroupDocument(
+          groupNameController.text,
+          "inviteCode",
+          3,
+          firstFriendController.text,
+          secondFriendController.text,
+          yourNameController.text);
+      Navigator.pop(context);
+    }
+  }
+
+  final groupNameController = TextEditingController();
+  final firstFriendController = TextEditingController();
+  final secondFriendController = TextEditingController();
+  final yourNameController = TextEditingController();
+
   void createGroupScreen(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
     var pageWidth = MediaQuery.of(context).size.height;
@@ -66,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              height: pageHeight * 0.8,
+              height: pageHeight * 0.85,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
@@ -91,17 +111,38 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: pageHeight * 0.02,
                     ),
-                    const HomePageTextField(hintText: "Your group's name"),
+
+                    HomePageTextField(
+                      hintText: "Your group's name",
+                      controller: groupNameController,
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.03,
+                    ),
+                    Text(
+                      "You",
+                    ),
+                    SizedBox(
+                      height: pageHeight * 0.02,
+                    ),
+                    HomePageTextField(
+                      hintText: "Your name",
+                      controller: yourNameController,
+                    ),
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
                     Text(
                       "First Friend",
                     ),
+
                     SizedBox(
                       height: pageHeight * 0.02,
                     ),
-                    const HomePageTextField(hintText: "First friend's name"),
+                    HomePageTextField(
+                      hintText: "First friend's name",
+                      controller: firstFriendController,
+                    ),
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
@@ -111,7 +152,10 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: pageHeight * 0.02,
                     ),
-                    const HomePageTextField(hintText: "Second friend's name"),
+                    HomePageTextField(
+                      hintText: "Second friend's name",
+                      controller: secondFriendController,
+                    ),
                     //openSeperateBottomSheet(context),
                     SizedBox(
                       height: pageHeight * 0.03,
@@ -135,7 +179,9 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               )),
-          onPressed: () {},
+          onPressed: () {
+            createGroup();
+          },
           child: Text(
             "Create Group",
             style: GoogleFonts.manrope(

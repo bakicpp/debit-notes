@@ -79,13 +79,15 @@ class EmptyPageButtons extends StatelessWidget {
 }
 
 class HomePageTextField extends StatelessWidget {
-  const HomePageTextField({super.key, required this.hintText, required});
+  const HomePageTextField({super.key, required this.hintText, this.controller});
 
   final String? hintText;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       keyboardType: TextInputType.text,
       style: GoogleFonts.spaceGrotesk(
           fontSize: 15, color: const Color.fromRGBO(71, 84, 103, 0.7)),

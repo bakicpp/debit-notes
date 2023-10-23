@@ -38,6 +38,76 @@ class FirebaseCollectionService<T> {
     }
   }
 
+  Future<void> createGroupDocument(
+      String name,
+      String inviteCode,
+      int memberCount,
+      String firstFriendName,
+      String secondFriendName,
+      String ownerName) async {
+    try {
+      var groupsCollection = _firestore.collection('groups');
+      var newGroupRef = groupsCollection.doc();
+      await newGroupRef.set({
+        'name': name,
+        'inviteCode': inviteCode,
+        'memberCount': memberCount,
+      });
+
+      // "name" adında bir koleksiyon oluştur
+      var nameCollectionRef = newGroupRef.collection(name);
+      var user1Ref = nameCollectionRef.doc(firstFriendName);
+      var user2Ref = nameCollectionRef.doc(secondFriendName);
+      var groupOwnerRef = nameCollectionRef.doc(ownerName);
+
+      // "amounts" adında bir koleksiyon oluştur
+      var user1AmountsCol = user1Ref.collection("amounts");
+      var user2AmountsCol = user2Ref.collection("amounts");
+      var groupOwner = groupOwnerRef.collection("amounts");
+
+      user1Ref.collection("payments");
+      user2Ref.collection("payments");
+      groupOwnerRef.collection("payments");
+
+      var user1Amounts = user1AmountsCol.doc("debitSum");
+      var user2Amounts = user2AmountsCol.doc("debitSum");
+      var groupOwnerAmounts = groupOwner.doc("debitSum");
+
+      var user1Debits = user1AmountsCol.doc("userDebits");
+      var user2Debits = user2AmountsCol.doc("userDebits");
+      var groupOwnerDebits = groupOwner.doc("userDebits");
+
+      await groupOwnerAmounts.set({
+        'debitAmountSum': "",
+      });
+
+      await user1Amounts.set({
+        'debitAmountSum': "",
+      });
+
+      await user2Amounts.set({
+        'debitAmountSum': "",
+      });
+
+      await groupOwnerDebits.set({
+        'user1': "",
+        'user2': "",
+      });
+
+      await user1Debits.set({
+        'user1': "",
+        'user2': "",
+      });
+
+      await user2Debits.set({
+        'user1': "",
+        'user2': "",
+      });
+    } catch (e) {
+      print('Hata oluştu: $e');
+    }
+  }
+
   Future<void> add(T item) async {
     await _firestore
         .collection(collectionName)
