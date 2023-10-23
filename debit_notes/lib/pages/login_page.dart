@@ -1,5 +1,8 @@
 import 'package:debit_notes/constants/vectors.dart';
+import 'package:debit_notes/pages/homepage.dart';
 import 'package:debit_notes/pages/sign_up_page.dart';
+import 'package:debit_notes/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -12,6 +15,35 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> login() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text)
+          .then((value) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            PageTransition(
+                child: const HomePage(),
+                type: PageTransitionType.rightToLeftWithFade),
+            (route) => false);
+
+        return value;
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var pageWidth = MediaQuery.of(context).size.width;
@@ -76,19 +108,27 @@ class _LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {},
-        child: Text("Sign In",
-            style: GoogleFonts.manrope(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            )),
+        onPressed: login,
+        child: isLoading
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ))
+            : Text("Sign In",
+                style: GoogleFonts.manrope(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                )),
       ),
     );
   }
 
   TextFormField passwordTextField() {
     return TextFormField(
+      controller: passwordController,
       decoration: InputDecoration(
         labelText: "Password",
         contentPadding: EdgeInsets.symmetric(vertical: 0),
@@ -98,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
 
   TextFormField emailTextField() {
     return TextFormField(
+      controller: emailController,
       decoration: InputDecoration(
         labelText: "Email",
         contentPadding: EdgeInsets.symmetric(vertical: 0),

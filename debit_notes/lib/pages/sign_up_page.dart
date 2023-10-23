@@ -2,6 +2,7 @@ import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/pages/homepage.dart';
 import 'package:debit_notes/pages/login_page.dart';
 import 'package:debit_notes/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
@@ -19,31 +20,21 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  bool isLoading = true;
+  bool isLoading = false;
 
-  void signUp() {
-    if (passwordController.text == confirmPasswordController.text) {
-      setState(() {
-        isLoading = true;
-      });
-      AuthService()
-          .registerWithEmailAndPassword(
-              emailController.text, passwordController.text)
-          .then((value) => {
-                if (value != null)
-                  {
-                    setState(() {
-                      isLoading = false;
-                    }),
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        PageTransition(
-                            duration: const Duration(milliseconds: 300),
-                            child: const HomePage(),
-                            type: PageTransitionType.rightToLeftWithFade),
-                        (route) => false)
-                  }
-              });
+  void signUp() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: emailController.text, password: passwordController.text);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -129,8 +120,12 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         onPressed: signUp,
         child: isLoading
-            ? CircularProgressIndicator(
-                color: Colors.white,
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
               )
             : Text("Sign Up",
                 style: GoogleFonts.manrope(

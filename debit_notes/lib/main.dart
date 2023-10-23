@@ -1,4 +1,5 @@
 import 'package:debit_notes/pages/homepage.dart';
+import 'package:debit_notes/pages/login_page.dart';
 import 'package:debit_notes/pages/sign_up_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SignUpPage(),
+      home: const LoginPage(),
     );
   }
 }
