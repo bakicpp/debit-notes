@@ -38,6 +38,32 @@ class FirebaseCollectionService<T> {
     }
   }
 
+  Future<String?> getDocumentWithInviteCode(
+      {required String inviteCodeController}) async {
+    try {
+      var firebase = FirebaseFirestore.instance;
+      var querySnapshot = await firebase
+          .collection('groups')
+          .where('inviteCode', isEqualTo: inviteCodeController)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        String? documentId;
+        querySnapshot.docs.forEach((document) {
+          print("AAAAAAAAAAAAAAAAAAAAAAAAA id : " + document.id);
+          documentId = document.id;
+        });
+        return documentId;
+      } else {
+        print('Belge bulunamadı!');
+        return null;
+      }
+    } catch (e) {
+      print('Hata oluştu: $e');
+      return null;
+    }
+  }
+
   Stream getSnapshot(String docId, String dataField) {
     var docRef = _firestore.collection(collectionName).doc(docId);
     return docRef.snapshots().map((snapshot) {

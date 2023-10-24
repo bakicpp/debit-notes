@@ -76,10 +76,46 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<String> getStringFieldFromFirestore(String docId) async {
+    String? groupName;
+    await FirebaseFirestore.instance
+        .collection("groups")
+        .doc(docId)
+        .get()
+        .then((value) {
+      groupName = value.get("name");
+    });
+    return groupName!;
+  }
+
+  void joinGroup() async {
+    if (inviteCodeController.text != "") {
+      String docId = firebaseCollectionService
+          .getDocumentWithInviteCode(
+              inviteCodeController: inviteCodeController.text)
+          .toString();
+
+      FirebaseCollectionService groupRef = FirebaseCollectionService("groups");
+
+      //String groupName = groupRef.getByDocument(docId, "name").toString();
+
+      firebaseCollectionService.update("${Auth().currentUser!.email}", {
+        "hasGroup": true,
+        "groupName": "await getStringFieldFromFirestore(docId)",
+      });
+      setState(() {
+        hasGroup = true;
+      });
+      Navigator.pop(context);
+      //FirebaseCollectionService groupRef = FirebaseCollectionService("groups/$docId/$groupName");
+    }
+  }
+
   final groupNameController = TextEditingController();
   final firstFriendController = TextEditingController();
   final secondFriendController = TextEditingController();
   final yourNameController = TextEditingController();
+  final inviteCodeController = TextEditingController();
 
   void createGroupScreen(BuildContext context) {
     var pageHeight = MediaQuery.of(context).size.height;
@@ -243,7 +279,10 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: pageHeight * 0.02,
                     ),
-                    const HomePageTextField(hintText: "Ex: DN4234"),
+                    HomePageTextField(
+                      hintText: "Ex: DN4234",
+                      controller: inviteCodeController,
+                    ),
                     SizedBox(
                       height: pageHeight * 0.03,
                     ),
@@ -266,7 +305,7 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               )),
-          onPressed: () {},
+          onPressed: joinGroup,
           child: Text(
             "Join a Group",
             style: GoogleFonts.manrope(
