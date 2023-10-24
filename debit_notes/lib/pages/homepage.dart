@@ -28,20 +28,21 @@ class _HomePageState extends State<HomePage> {
   FirebaseCollectionService firebaseCollectionService =
       FirebaseCollectionService("users");
 
-  void hasGroupQuery() {
-    var hasGroupData = firebaseCollectionService.getSnapshot(
+  void hasGroupQuery() async {
+    var hasGroupQuery = await firebaseCollectionService.getByDocument(
         "${Auth().currentUser!.email}", "hasGroup");
 
-    print(hasGroupData.toString());
+    print(hasGroupQuery.toString());
 
-    if (hasGroupData.toString() == "true") {
+    if (hasGroupQuery == "true") {
       setState(() {
         hasGroup = true;
       });
     }
-    if (hasGroupData.toString() == "false") {
+    if (hasGroupQuery == "false") {
       setState(() {
         hasGroup = false;
+        print("hasgroup:  $hasGroup");
       });
     }
   }
@@ -304,7 +305,7 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: pageWidth / 18),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: hasGroup
+            child: !hasGroup
                 ? noGroupView(pageHeight, pageWidth)
                 : Column(
                     children: [

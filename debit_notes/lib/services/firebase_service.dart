@@ -27,8 +27,8 @@ class FirebaseCollectionService<T> {
       var usersCollection = _firestore.collection(collectionName);
       var userDocument = await usersCollection.doc(docId).get();
       if (userDocument.exists) {
-        var field = userDocument.data()?[dataField] as String?;
-        return field;
+        var field = userDocument.data()?[dataField];
+        return field.toString();
       } else {
         return null; // Belge bulunamazsa null döndürür
       }
