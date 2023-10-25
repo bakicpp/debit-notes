@@ -89,6 +89,7 @@ class FirebaseCollectionService<T> {
         'name': name,
         'inviteCode': inviteCode,
         'memberCount': memberCount,
+        'members': [ownerName, firstFriendName, secondFriendName],
       });
 
       // "name" adında bir koleksiyon oluştur
