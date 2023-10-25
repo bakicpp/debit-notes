@@ -76,38 +76,46 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<String> getStringFieldFromFirestore(String docId) async {
-    String? groupName;
-    await FirebaseFirestore.instance
-        .collection("groups")
-        .doc(docId)
-        .get()
-        .then((value) {
-      groupName = value.get("name");
-    });
-    return groupName!;
-  }
-
   void joinGroup() async {
     if (inviteCodeController.text != "") {
-      String docId = firebaseCollectionService
-          .getDocumentWithInviteCode(
-              inviteCodeController: inviteCodeController.text)
-          .toString();
+      var firebase = FirebaseFirestore.instance;
+      var querySnapshot = await firebase
+          .collection('groups')
+          .where('inviteCode', isEqualTo: inviteCodeController.text)
+          .get();
 
-      FirebaseCollectionService groupRef = FirebaseCollectionService("groups");
+      if (querySnapshot.docs.isNotEmpty) {
+        String? documentId;
+        querySnapshot.docs.forEach((document) {
+          documentId = document.id;
+        });
 
-      //String groupName = groupRef.getByDocument(docId, "name").toString();
+        FirebaseFirestore.instance
+            .collection('groups')
+            .doc(documentId.toString())
+            .get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            print('Document data: ${documentSnapshot.data()}');
+            Map<String, dynamic>? data =
+                documentSnapshot.data() as Map<String, dynamic>?;
+            firebaseCollectionService.update("${Auth().currentUser!.email}", {
+              "hasGroup": true,
+              "groupName": data?["name"],
+            });
+          } else {
+            print('Document does not exist on the database');
+          }
+        });
 
-      firebaseCollectionService.update("${Auth().currentUser!.email}", {
-        "hasGroup": true,
-        "groupName": "await getStringFieldFromFirestore(docId)",
-      });
-      setState(() {
-        hasGroup = true;
-      });
-      Navigator.pop(context);
-      //FirebaseCollectionService groupRef = FirebaseCollectionService("groups/$docId/$groupName");
+        setState(() {
+          hasGroup = true;
+        });
+        Navigator.pop(context);
+      } else {
+        print('Belge bulunamadı!');
+        return null;
+      }
     }
   }
 
