@@ -23,7 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
   String groupDocumentId = "";
-  String userGroupName = "";
+  String groupName = "";
   bool hasGroup = false;
   List cardColors = [
     CardColors.red,
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
         "${Auth().currentUser!.email}", "groupName");
 
     setState(() {
-      userGroupName = userGroupName!;
+      groupName = userGroupName.toString();
     });
 
     var firebase = FirebaseFirestore.instance;
@@ -601,7 +601,9 @@ class _HomePageState extends State<HomePage> {
   StreamBuilder<DocumentSnapshot<Object?>> realTimeAmount(
       String username, String userShownName) {
     late CollectionReference _ref = FirebaseFirestore.instance.collection(
-        "groups/{$groupDocumentId}/{$userGroupName}/{$userShownName}/amounts");
+        "groups/$groupDocumentId/$groupName/$userShownName/amounts");
+
+    print("groups/$groupDocumentId/$groupName/$userShownName/amounts");
 
     return StreamBuilder<DocumentSnapshot>(
         stream: _ref.doc("debitSum").snapshots(),
