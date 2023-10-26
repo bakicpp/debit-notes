@@ -23,8 +23,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
   String groupDocumentId = "";
+  String userGroupName = "";
   bool hasGroup = false;
-
+  List cardColors = [
+    CardColors.red,
+    CardColors.green,
+    CardColors.pink,
+  ];
   FirebaseCollectionService firebaseCollectionService =
       FirebaseCollectionService("users");
 
@@ -50,6 +55,10 @@ class _HomePageState extends State<HomePage> {
   userGroupQuery() async {
     var userGroupName = await firebaseCollectionService.getByDocument(
         "${Auth().currentUser!.email}", "groupName");
+
+    setState(() {
+      userGroupName = userGroupName!;
+    });
 
     var firebase = FirebaseFirestore.instance;
     var querySnapshot = await firebase
@@ -78,7 +87,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       memberList = members!;
     });
-    print("Members: " + members.toString());
+    //print("Members: " + members.toString());
   }
 
   @override
@@ -398,7 +407,26 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: pageHeight * 0.05,
                       ),
-                      card1(pageWidth, pageHeight),
+                      ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: pageHeight * 0.01),
+                            child: card1(
+                              pageWidth,
+                              pageHeight,
+                              cardColors[index],
+                              userRef: memberList[index],
+                              name: memberList[index],
+                            ),
+                          );
+                        },
+                        itemCount: memberList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                      ),
+
+                      /*card1(pageWidth, pageHeight),
                       SizedBox(
                         height: pageHeight * 0.05,
                       ),
@@ -406,7 +434,7 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(
                         height: pageHeight * 0.05,
                       ),
-                      card3(pageWidth, pageHeight),
+                      card3(pageWidth, pageHeight),*/
                     ],
                   ),
           ),
@@ -524,7 +552,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  GestureDetector card1(double pageWidth, double pageHeight) {
+  GestureDetector card1(double pageWidth, double pageHeight, Color color,
+      {required String name, required String userRef}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -545,13 +574,13 @@ class _HomePageState extends State<HomePage> {
             blurRadius: 4,
             offset: const Offset(0, 4), // changes position of shadow
           ),
-        ], borderRadius: BorderRadius.circular(16), color: CardColors.red),
-        child: cardContent("baki", memberList[0]),
+        ], borderRadius: BorderRadius.circular(16), color: color),
+        child: cardContent(userRef, name),
       ),
     );
   }
 
-  Padding cardContent(String username, String userShownName) {
+  Padding cardContent(String userRef, String userShownName) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       child: Column(
@@ -563,7 +592,7 @@ class _HomePageState extends State<HomePage> {
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          realTimeAmount(username, userShownName),
+          realTimeAmount(userRef, userShownName),
         ],
       ),
     );
@@ -571,8 +600,8 @@ class _HomePageState extends State<HomePage> {
 
   StreamBuilder<DocumentSnapshot<Object?>> realTimeAmount(
       String username, String userShownName) {
-    late CollectionReference _ref =
-        FirebaseFirestore.instance.collection("users/$username/amounts");
+    late CollectionReference _ref = FirebaseFirestore.instance.collection(
+        "groups/{$groupDocumentId}/{$userGroupName}/{$userShownName}/amounts");
 
     return StreamBuilder<DocumentSnapshot>(
         stream: _ref.doc("debitSum").snapshots(),
