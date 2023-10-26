@@ -22,7 +22,16 @@ int user2Debit = 0;
 bool changeView = false;
 
 class CardPage extends StatefulWidget {
-  const CardPage({super.key});
+  const CardPage({
+    super.key,
+    required this.groupDocumentId,
+    required this.groupName,
+    required this.userRef,
+  });
+
+  final String groupDocumentId;
+  final String groupName;
+  final String userRef;
 
   @override
   State<CardPage> createState() => _CardPageState();

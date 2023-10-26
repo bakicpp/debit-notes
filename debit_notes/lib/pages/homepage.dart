@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debit_notes/constants/colors.dart';
 import 'package:debit_notes/constants/vectors.dart';
 import 'package:debit_notes/constants/widgets.dart';
+import 'package:debit_notes/pages/card_pages/card_page.dart';
 import 'package:debit_notes/pages/card_pages/first_card_page.dart';
 import 'package:debit_notes/pages/card_pages/second_card_page.dart';
 import 'package:debit_notes/pages/card_pages/third_card_page.dart';
@@ -381,20 +382,7 @@ class _HomePageState extends State<HomePage> {
             style:
                 GoogleFonts.prompt(fontSize: 48, fontWeight: FontWeight.w700),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Auth().signOut().then((value) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        PageTransition(
-                            child: const LoginPage(),
-                            type: PageTransitionType.leftToRightWithFade),
-                        (route) => false);
-                  });
-                },
-                icon: Icon(FontAwesomeIcons.signOut))
-          ],
+          actions: [signOutButton(context)],
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: pageWidth / 18),
@@ -402,43 +390,61 @@ class _HomePageState extends State<HomePage> {
             physics: BouncingScrollPhysics(),
             child: !hasGroup
                 ? noGroupView(pageHeight, pageWidth)
-                : Column(
-                    children: [
-                      SizedBox(
-                        height: pageHeight * 0.05,
-                      ),
-                      ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: pageHeight * 0.01),
-                            child: card1(
-                              pageWidth,
-                              pageHeight,
-                              cardColors[index],
-                              userRef: memberList[index],
-                              name: memberList[index],
-                            ),
-                          );
-                        },
-                        itemCount: memberList.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                      ),
-
-                      /*card1(pageWidth, pageHeight),
-                      SizedBox(
-                        height: pageHeight * 0.05,
-                      ),
-                      card2(pageWidth, pageHeight),
-                      SizedBox(
-                        height: pageHeight * 0.05,
-                      ),
-                      card3(pageWidth, pageHeight),*/
-                    ],
-                  ),
+                : cardView(pageHeight, pageWidth),
           ),
         ));
+  }
+
+  Column cardView(double pageHeight, double pageWidth) {
+    return Column(
+      children: [
+        SizedBox(
+          height: pageHeight * 0.05,
+        ),
+        ListView.builder(
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: pageHeight * 0.01),
+              child: card1(
+                pageWidth,
+                pageHeight,
+                cardColors[index],
+                userRef: memberList[index],
+                name: memberList[index],
+              ),
+            );
+          },
+          itemCount: memberList.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+        ),
+
+        /*card1(pageWidth, pageHeight),
+                    SizedBox(
+                      height: pageHeight * 0.05,
+                    ),
+                    card2(pageWidth, pageHeight),
+                    SizedBox(
+                      height: pageHeight * 0.05,
+                    ),
+                    card3(pageWidth, pageHeight),*/
+      ],
+    );
+  }
+
+  IconButton signOutButton(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          Auth().signOut().then((value) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                PageTransition(
+                    child: const LoginPage(),
+                    type: PageTransitionType.leftToRightWithFade),
+                (route) => false);
+          });
+        },
+        icon: Icon(FontAwesomeIcons.signOut));
   }
 
   Column noGroupView(double pageHeight, double pageWidth) {
@@ -560,8 +566,12 @@ class _HomePageState extends State<HomePage> {
           context,
           PageTransition(
               type: PageTransitionType.rightToLeft,
-              child:
-                  const FirstCardPage()), // İkinci ekranın adı "SecondScreen"
+              child: CardPage(
+                groupDocumentId: groupDocumentId,
+                groupName: groupName,
+                userRef: userRef,
+                memberList: memberList,
+              )), // İkinci ekranın adı "SecondScreen"
         );
       },
       child: Container(
