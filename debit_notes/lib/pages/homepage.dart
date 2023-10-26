@@ -22,7 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int yourPayment = 0;
-
+  String groupDocumentId = "";
   bool hasGroup = false;
 
   FirebaseCollectionService firebaseCollectionService =
@@ -47,8 +47,43 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  userGroupQuery() async {
+    var userGroupName = await firebaseCollectionService.getByDocument(
+        "${Auth().currentUser!.email}", "groupName");
+
+    var firebase = FirebaseFirestore.instance;
+    var querySnapshot = await firebase
+        .collection('groups')
+        .where('name', isEqualTo: userGroupName)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      String? documentId;
+      querySnapshot.docs.forEach((document) {
+        documentId = document.id;
+        setState(() {
+          groupDocumentId = documentId!;
+        });
+      });
+      getMembers();
+    }
+  }
+
+  List memberList = [];
+
+  void getMembers() async {
+    FirebaseCollectionService groupRef = FirebaseCollectionService("groups");
+    var members =
+        await groupRef.getByDocumentAsList(groupDocumentId, "members");
+    setState(() {
+      memberList = members!;
+    });
+    print("Members: " + members.toString());
+  }
+
   @override
   void initState() {
+    userGroupQuery();
     hasGroupQuery();
     // TODO: implement initState
     super.initState();
@@ -88,6 +123,9 @@ class _HomePageState extends State<HomePage> {
         String? documentId;
         querySnapshot.docs.forEach((document) {
           documentId = document.id;
+          setState(() {
+            groupDocumentId = documentId!;
+          });
         });
 
         FirebaseFirestore.instance
@@ -111,6 +149,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           hasGroup = true;
         });
+        getMembers();
         Navigator.pop(context);
       } else {
         print('Belge bulunamadı!');
@@ -446,7 +485,7 @@ class _HomePageState extends State<HomePage> {
           height: pageHeight * 0.25,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16), color: CardColors.pink),
-          child: cardContent("ibrahim", "İbrahim"),
+          child: cardContent("ibrahim", memberList[2]),
         ),
       ),
     );
@@ -479,7 +518,7 @@ class _HomePageState extends State<HomePage> {
           height: pageHeight * 0.25,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16), color: CardColors.green),
-          child: cardContent("anil", "Anıl"),
+          child: cardContent("anil", memberList[1]),
         ),
       ),
     );
@@ -507,7 +546,7 @@ class _HomePageState extends State<HomePage> {
             offset: const Offset(0, 4), // changes position of shadow
           ),
         ], borderRadius: BorderRadius.circular(16), color: CardColors.red),
-        child: cardContent("baki", "Baki"),
+        child: cardContent("baki", memberList[0]),
       ),
     );
   }

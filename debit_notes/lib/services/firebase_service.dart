@@ -38,6 +38,22 @@ class FirebaseCollectionService<T> {
     }
   }
 
+  Future<List?> getByDocumentAsList(String docId, String dataField) async {
+    try {
+      var usersCollection = _firestore.collection(collectionName);
+      var userDocument = await usersCollection.doc(docId).get();
+      if (userDocument.exists) {
+        var field = userDocument.data()?[dataField];
+        return field;
+      } else {
+        return null; // Belge bulunamazsa null döndürür
+      }
+    } catch (e) {
+      print('Hata oluştu: $e');
+      return null;
+    }
+  }
+
   Future<String?> getDocumentWithInviteCode(
       {required String inviteCodeController}) async {
     try {
