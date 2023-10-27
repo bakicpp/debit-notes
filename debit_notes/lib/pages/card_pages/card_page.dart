@@ -554,7 +554,7 @@ class _CardPageState extends State<CardPage> {
 
   StreamBuilder<DocumentSnapshot> getUser1Debit(double pageWidth) {
     return StreamBuilder<DocumentSnapshot>(
-        stream: _ref.doc("userDebit").snapshots(),
+        stream: _ref.doc("userDebits").snapshots(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -604,7 +604,7 @@ class _CardPageState extends State<CardPage> {
 
   StreamBuilder<DocumentSnapshot> getUser2Debit(double pageWidth) {
     return StreamBuilder<DocumentSnapshot>(
-        stream: _ref.doc("userDebit").snapshots(),
+        stream: _ref.doc("userDebits").snapshots(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -956,7 +956,7 @@ StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit(
   return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
           .collection("groups/$groupDocumentId/$groupName/$userRef/amounts")
-          .doc("userDebit")
+          .doc("userDebits")
           .snapshots(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
