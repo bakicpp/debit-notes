@@ -53,10 +53,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  userGroupQuery() async {
+  void userGroupQuery() async {
+    print(Auth().currentUser!.email);
     var userGroupName = await firebaseCollectionService.getByDocument(
         "${Auth().currentUser!.email}", "groupName");
 
+    print("userGroupName : " + userGroupName.toString());
     setState(() {
       groupName = userGroupName.toString();
     });
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         .collection('groups')
         .where('name', isEqualTo: userGroupName)
         .get();
-
+    print("groupName : " + groupName);
     if (querySnapshot.docs.isNotEmpty) {
       String? documentId;
       querySnapshot.docs.forEach((document) {
@@ -109,13 +111,16 @@ class _HomePageState extends State<HomePage> {
           3,
           firstFriendController.text,
           secondFriendController.text,
-          yourNameController.text);
+          yourNameController.text,
+          Auth().currentUser!.email.toString());
       firebaseCollectionService.update("${Auth().currentUser!.email}", {
         "hasGroup": true,
+        "groupName": groupNameController.text,
       });
       setState(() {
         hasGroup = true;
       });
+      getMembers();
 
       Navigator.pop(context);
     }

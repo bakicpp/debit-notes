@@ -97,7 +97,8 @@ class FirebaseCollectionService<T> {
       int memberCount,
       String firstFriendName,
       String secondFriendName,
-      String ownerName) async {
+      String ownerName,
+      String userMail) async {
     try {
       var groupsCollection = _firestore.collection('groups');
       var newGroupRef = groupsCollection.doc();
@@ -132,30 +133,30 @@ class FirebaseCollectionService<T> {
       var groupOwnerDebits = groupOwner.doc("userDebits");
 
       await groupOwnerAmounts.set({
-        'debitAmountSum': "",
+        'debitAmountSum': "0",
       });
 
       await user1Amounts.set({
-        'debitAmountSum': "",
+        'debitAmountSum': "0",
       });
 
       await user2Amounts.set({
-        'debitAmountSum': "",
+        'debitAmountSum': "0",
       });
 
       await groupOwnerDebits.set({
-        'user1': "",
-        'user2': "",
+        'user1': "0",
+        'user2': "0",
       });
 
       await user1Debits.set({
-        'user1': "",
-        'user2': "",
+        'user1': "0",
+        'user2': "0",
       });
 
       await user2Debits.set({
-        'user1': "",
-        'user2': "",
+        'user1': "0",
+        'user2': "0",
       });
     } catch (e) {
       print('Hata oluştu: $e');
