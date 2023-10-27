@@ -22,16 +22,17 @@ int user2Debit = 0;
 bool changeView = false;
 
 class CardPage extends StatefulWidget {
-  const CardPage({
-    super.key,
-    required this.groupDocumentId,
-    required this.groupName,
-    required this.userRef,
-  });
+  const CardPage(
+      {super.key,
+      required this.groupDocumentId,
+      required this.groupName,
+      required this.userRef,
+      required this.memberList});
 
   final String groupDocumentId;
   final String groupName;
   final String userRef;
+  final List memberList;
 
   @override
   State<CardPage> createState() => _CardPageState();
@@ -51,9 +52,20 @@ class _CardPageState extends State<CardPage> {
 
   final flipCardController = FlipCardController();
 
+  static String? groupDocumentId;
+  static String? groupName;
+  static String? userRef;
+  static List? memberList;
+
   @override
   void initState() {
     super.initState();
+    groupDocumentId = widget.groupDocumentId;
+    groupName = widget.groupName;
+    userRef = widget.userRef;
+    memberList = widget.memberList;
+    print(memberList);
+
     setState(() {
       changeView = false;
     });
@@ -270,8 +282,12 @@ class _CardPageState extends State<CardPage> {
     );
   }
 
+  /*FirebaseCollectionService firebaseCollectionService =
+      FirebaseCollectionService('users/baki/amounts');*/
+
   FirebaseCollectionService firebaseCollectionService =
-      FirebaseCollectionService('users/baki/amounts');
+      FirebaseCollectionService(
+          'groups/$groupDocumentId/$groupName/$memberList[0]/amounts');
 
   void updateDebitSum() {
     firebaseCollectionService.update("debitSum", {
@@ -411,7 +427,7 @@ class _CardPageState extends State<CardPage> {
         ),
         toolbarHeight: 150,
         title: Text(
-          "What\nBaki Paids",
+          "What\n$userRef Paids",
           style: GoogleFonts.prompt(fontSize: 48, fontWeight: FontWeight.w700),
         ),
       ),
@@ -421,7 +437,10 @@ class _CardPageState extends State<CardPage> {
           physics: const BouncingScrollPhysics(),
           child: Column(
             children: [
-              card1(pageWidth, pageHeight, flipCardController),
+              card1(pageWidth, pageHeight, flipCardController,
+                  name: userRef,
+                  groupDocumentId: groupDocumentId,
+                  groupName: groupName),
               SizedBox(
                 height: pageHeight * 0.05,
               ),
@@ -505,7 +524,7 @@ class _CardPageState extends State<CardPage> {
               height: pageHeight * 0.03,
             ),
             Text(
-              "Anıl",
+              memberList![1],
               style: GoogleFonts.prompt(
                   fontSize: 32,
                   color: const Color(0xff808080),
@@ -520,7 +539,7 @@ class _CardPageState extends State<CardPage> {
               height: pageHeight * 0.03,
             ),
             Text(
-              "İbrahim",
+              memberList![2],
               style: GoogleFonts.prompt(
                   fontSize: 32,
                   color: const Color(0xff808080),
@@ -659,8 +678,8 @@ class _CardPageState extends State<CardPage> {
     }
   }
 
-  late CollectionReference _ref =
-      FirebaseFirestore.instance.collection("users/baki/amounts");
+  late CollectionReference _ref = FirebaseFirestore.instance
+      .collection("groups/$groupDocumentId/$groupName/$userRef/amounts");
 
   StreamBuilder debitList(double pageHeight, double pageWidth) {
     return StreamBuilder<QuerySnapshot>(
@@ -803,22 +822,37 @@ class _CardPageState extends State<CardPage> {
   }
 }
 
-Padding card1(double pageWidth, double pageHeight, flipCardController) {
+Padding card1(
+  double pageWidth,
+  double pageHeight,
+  flipCardController, {
+  required String? name,
+  required String? groupDocumentId,
+  required String? groupName,
+}) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: pageWidth * 0.03),
     child: FlipCard(
       animationDuration: const Duration(milliseconds: 300),
       onTapFlipping: true,
       axis: FlipAxis.horizontal,
-      frontWidget: card1Front(pageWidth, pageHeight),
-      backWidget: card1Back(pageWidth, pageHeight),
+      frontWidget: card1Front(pageWidth, pageHeight,
+          name: name, groupDocumentId: groupDocumentId, groupName: groupName),
+      backWidget: card1Back(pageWidth, pageHeight,
+          name: name, groupDocumentId: groupDocumentId, groupName: groupName),
       controller: flipCardController,
       rotateSide: RotateSide.right,
     ),
   );
 }
 
-Container card1Front(double pageWidth, double pageHeight) {
+Container card1Front(
+  double pageWidth,
+  double pageHeight, {
+  required String? name,
+  required String? groupDocumentId,
+  required String? groupName,
+}) {
   return Container(
     width: pageWidth,
     height: pageHeight * 0.25,
@@ -831,18 +865,27 @@ Container card1Front(double pageWidth, double pageHeight) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Baki",
+            name.toString(),
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          getDebitAmountSum()
+          getDebitAmountSum(
+              groupDocumentId: groupDocumentId,
+              groupName: groupName,
+              userRef: name)
         ],
       ),
     ),
   );
 }
 
-Container card1Back(double pageWidth, double pageHeight) {
+Container card1Back(
+  double pageWidth,
+  double pageHeight, {
+  required String? name,
+  required String? groupDocumentId,
+  required String? groupName,
+}) {
   return Container(
     width: pageWidth,
     height: pageHeight * 0.25,
@@ -855,21 +898,27 @@ Container card1Back(double pageWidth, double pageHeight) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Baki",
+            name.toString(),
             style:
                 GoogleFonts.prompt(fontSize: 36, fontWeight: FontWeight.w700),
           ),
-          getTotalDebit()
+          getTotalDebit(
+              groupDocumentId: groupDocumentId,
+              groupName: groupName,
+              userRef: name)
         ],
       ),
     ),
   );
 }
 
-StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum() {
+StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum(
+    {required String? groupDocumentId,
+    required String? groupName,
+    required String? userRef}) {
   return StreamBuilder(
       stream: FirebaseFirestore.instance
-          .collection("users/baki/amounts")
+          .collection("groups/$groupDocumentId/$groupName/$userRef/amounts")
           .doc("debitSum")
           .snapshots(),
       builder:
@@ -900,10 +949,13 @@ StreamBuilder<DocumentSnapshot<Map<String, dynamic>>> getDebitAmountSum() {
       });
 }
 
-StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit() {
+StreamBuilder<DocumentSnapshot<Object?>> getTotalDebit(
+    {required String? groupDocumentId,
+    required String? groupName,
+    required String? userRef}) {
   return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
-          .collection("users/baki/amounts")
+          .collection("groups/$groupDocumentId/$groupName/$userRef/amounts")
           .doc("userDebit")
           .snapshots(),
       builder:
