@@ -287,7 +287,7 @@ class _CardPageState extends State<CardPage> {
 
   FirebaseCollectionService firebaseCollectionService =
       FirebaseCollectionService(
-          'groups/$groupDocumentId/$groupName/$memberList[0]/amounts');
+          "groups/$groupDocumentId/$groupName/$userRef/amounts");
 
   void updateDebitSum() {
     firebaseCollectionService.update("debitSum", {
@@ -296,10 +296,12 @@ class _CardPageState extends State<CardPage> {
   }
 
   void addPayment() {
+    print("Burası : " + 'groups/$groupDocumentId/$groupName/$userRef/amounts');
     if (descriptionController.text != "" && amountController.text != "") {
       setState(() {
         debitAmountSum += int.parse(amountController.text);
         updateDebitSum();
+
         firebaseCollectionService.add({
           'amount': amountController.text,
           'description': descriptionController.text,
