@@ -116,10 +116,12 @@ class _CardPageState extends State<CardPage> {
     );
   }
 
-  final FirebaseCollectionService _refUser1 =
-      FirebaseCollectionService("users/anil/amounts");
-  final FirebaseCollectionService _refUser2 =
-      FirebaseCollectionService("users/ibrahim/amounts");
+  //groups/m8RWw2Vof4nEV0otZKfM/YeniGrup/bakii/amounts
+
+  late final FirebaseCollectionService _refUser1 = FirebaseCollectionService(
+      "groups/$groupDocumentId/$groupName/${memberList![1].toString()}/amounts");
+  late final FirebaseCollectionService _refUser2 = FirebaseCollectionService(
+      "groups/$groupDocumentId/$groupName/${memberList![2].toString()}/amounts");
 
   Container addSeperateButton() {
     return Container(
@@ -148,14 +150,14 @@ class _CardPageState extends State<CardPage> {
             updateDebitSum();
 
             if (user1SeperateDebitController.text != "") {
-              _refUser1.update("userDebit", {
+              _refUser1.update("userDebits", {
                 "user1": (user1Debit +=
                         int.parse(user1SeperateDebitController.text))
                     .toString()
               });
             }
             if (user2SeperateDebitController.text != "") {
-              _refUser2.update("userDebit", {
+              _refUser2.update("userDebits", {
                 "user2": (user2Debit +=
                         int.parse(user2SeperateDebitController.text))
                     .toString()
@@ -285,7 +287,7 @@ class _CardPageState extends State<CardPage> {
   /*FirebaseCollectionService firebaseCollectionService =
       FirebaseCollectionService('users/baki/amounts');*/
 
-  FirebaseCollectionService firebaseCollectionService =
+  late FirebaseCollectionService firebaseCollectionService =
       FirebaseCollectionService(
           "groups/$groupDocumentId/$groupName/$userRef/amounts");
 
