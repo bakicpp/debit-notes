@@ -669,13 +669,13 @@ class _CardPageState extends State<CardPage> {
 
   void updateUserDebits() {
     if (user1DebitController.text != "") {
-      firebaseCollectionService.update("userDebit", {
+      firebaseCollectionService.update("userDebits", {
         'user1': user1Debit.toString(),
       });
       user1DebitController.clear();
     }
     if (user2DebitController.text != "") {
-      firebaseCollectionService.update("userDebit", {
+      firebaseCollectionService.update("userDebits", {
         'user2': user2Debit.toString(),
       });
       user2DebitController.clear();
