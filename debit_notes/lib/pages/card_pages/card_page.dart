@@ -861,7 +861,12 @@ Container card1Front(
     width: pageWidth,
     height: pageHeight * 0.25,
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16), color: CardColors.red),
+        borderRadius: BorderRadius.circular(16),
+        color: name == _CardPageState.memberList![0]
+            ? CardColors.red
+            : name == _CardPageState.memberList![1]
+                ? CardColors.green
+                : CardColors.pink),
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       child: Column(
@@ -894,7 +899,12 @@ Container card1Back(
     width: pageWidth,
     height: pageHeight * 0.25,
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16), color: CardColors.red),
+        borderRadius: BorderRadius.circular(16),
+        color: name == _CardPageState.memberList![0]
+            ? CardColors.red
+            : name == _CardPageState.memberList![1]
+                ? CardColors.green
+                : CardColors.pink),
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
       child: Column(
