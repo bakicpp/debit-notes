@@ -528,7 +528,7 @@ class _CardPageState extends State<CardPage> {
               height: pageHeight * 0.03,
             ),
             Text(
-              memberList![1],
+              userRef != memberList![1] ? memberList![1] : memberList![0],
               style: GoogleFonts.prompt(
                   fontSize: 32,
                   color: const Color(0xff808080),
@@ -543,7 +543,7 @@ class _CardPageState extends State<CardPage> {
               height: pageHeight * 0.03,
             ),
             Text(
-              memberList![2],
+              userRef != memberList![2] ? memberList![2] : memberList![0],
               style: GoogleFonts.prompt(
                   fontSize: 32,
                   color: const Color(0xff808080),
