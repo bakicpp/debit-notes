@@ -149,16 +149,22 @@ class _CardPageState extends State<CardPage> {
             }
             updateDebitSum();
 
+            var userOption = userRef == memberList![0]
+                ? "user1"
+                : userRef == memberList![1]
+                    ? "user2"
+                    : "user1";
+
             if (user1SeperateDebitController.text != "") {
               _refUser1.update("userDebits", {
-                "user1": (user1Debit +=
+                userOption: (user1Debit +=
                         int.parse(user1SeperateDebitController.text))
                     .toString()
               });
             }
             if (user2SeperateDebitController.text != "") {
               _refUser2.update("userDebits", {
-                "user2": (user2Debit +=
+                userOption: (user2Debit +=
                         int.parse(user2SeperateDebitController.text))
                     .toString()
               });
