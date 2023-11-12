@@ -118,10 +118,23 @@ class _CardPageState extends State<CardPage> {
 
   //groups/m8RWw2Vof4nEV0otZKfM/YeniGrup/bakii/amounts
 
-  late final FirebaseCollectionService _refUser1 = FirebaseCollectionService(
-      "groups/$groupDocumentId/$groupName/${memberList![1].toString()}/amounts");
-  late final FirebaseCollectionService _refUser2 = FirebaseCollectionService(
-      "groups/$groupDocumentId/$groupName/${memberList![2].toString()}/amounts");
+  late final FirebaseCollectionService _refUser1 = userRef == memberList![0]
+      ? FirebaseCollectionService(
+          "groups/$groupDocumentId/$groupName/${memberList![1].toString()}/amounts")
+      : userRef == memberList![1]
+          ? FirebaseCollectionService(
+              "groups/$groupDocumentId/$groupName/${memberList![0].toString()}/amounts")
+          : FirebaseCollectionService(
+              "groups/$groupDocumentId/$groupName/${memberList![1].toString()}/amounts");
+
+  late final FirebaseCollectionService _refUser2 = userRef == memberList![0]
+      ? FirebaseCollectionService(
+          "groups/$groupDocumentId/$groupName/${memberList![2].toString()}/amounts")
+      : userRef == memberList![1]
+          ? FirebaseCollectionService(
+              "groups/$groupDocumentId/$groupName/${memberList![2].toString()}/amounts")
+          : FirebaseCollectionService(
+              "groups/$groupDocumentId/$groupName/${memberList![0].toString()}/amounts");
 
   Container addSeperateButton() {
     return Container(
@@ -149,22 +162,28 @@ class _CardPageState extends State<CardPage> {
             }
             updateDebitSum();
 
-            var userOption = userRef == memberList![0]
+            var userOption1 = userRef == memberList![0]
                 ? "user1"
                 : userRef == memberList![1]
-                    ? "user2"
-                    : "user1";
+                    ? "user1"
+                    : "user2";
+
+            var userOption2 = userRef == memberList![0]
+                ? "user2"
+                : userRef == memberList![1]
+                    ? "user1"
+                    : "user2";
 
             if (user1SeperateDebitController.text != "") {
               _refUser1.update("userDebits", {
-                userOption: (user1Debit +=
+                userOption1: (user1Debit +=
                         int.parse(user1SeperateDebitController.text))
                     .toString()
               });
             }
             if (user2SeperateDebitController.text != "") {
               _refUser2.update("userDebits", {
-                userOption: (user2Debit +=
+                userOption2: (user2Debit +=
                         int.parse(user2SeperateDebitController.text))
                     .toString()
               });
